@@ -13,7 +13,7 @@ import {
   DailyWeeklyRoadmapTask,
   StudentTopicPerformance
 } from '@/types';
-import { sampleCompanies, defaultCollegePlacementData } from '@/data/mockData';
+import { sampleCompanies } from '@/data/mockData';
 
 // ============================================================================
 // 1. TOPIC & SKILL GAP ANALYZER
@@ -21,14 +21,16 @@ import { sampleCompanies, defaultCollegePlacementData } from '@/data/mockData';
 
 export function analyzeStudentSkillGaps(
   topicPerformances: StudentTopicPerformance[],
-  targetCompanyIds: string[]
+  targetCompanyIds?: string[]
 ): SkillGapItem[] {
   // If student hasn't completed any assessments, handle gracefully
   if (!topicPerformances || topicPerformances.length === 0) {
     return [];
   }
 
-  const selectedCompanies = sampleCompanies.filter(c => targetCompanyIds.includes(c.id));
+  const targetCompanies = (targetCompanyIds && targetCompanyIds.length > 0)
+    ? sampleCompanies.filter(c => targetCompanyIds.includes(c.id))
+    : [];
   const gaps: SkillGapItem[] = [];
 
   // Skill mappings to PlacePrep modules
@@ -58,6 +60,14 @@ export function analyzeStudentSkillGaps(
       gapStatus = 'Critical Gap';
     } else if (studentScore < required) {
       gapStatus = 'Needs Practice';
+    }
+
+    const isTargetSkill = targetCompanies.some(c =>
+      c.aptitudeTopics.some(kt => tp.topic.toLowerCase().includes(kt.toLowerCase()) || meta.category.toLowerCase().includes(kt.toLowerCase())) ||
+      c.technicalTopics.some(kt => tp.topic.toLowerCase().includes(kt.toLowerCase()) || meta.category.toLowerCase().includes(kt.toLowerCase()))
+    );
+    if (isTargetSkill && gapStatus === 'Needs Practice') {
+      gapStatus = 'Critical Gap';
     }
 
     gaps.push({
@@ -239,7 +249,7 @@ export function generatePersonalizedRoadmap(
     weekNumber: 1,
     title: `${lowestTopic.topic}: Foundations & Practice`,
     topic: lowestTopic.topic,
-    category: lowestTopic.category as any,
+    category: lowestTopic.category as DailyWeeklyRoadmapTask['category'],
     recommendedActivity: `Study ${lowestTopic.topic} core concepts and attempt a 10-question practice test`,
     estimatedMinutes: Math.min(60, Math.round(dailyTime * 0.5)),
     priority: 'High',
@@ -276,7 +286,7 @@ export function generatePersonalizedRoadmap(
     weekNumber: 1,
     title: `${secondWeak.topic} Tabulation & Memory Practice`,
     topic: secondWeak.topic,
-    category: secondWeak.category as any,
+    category: secondWeak.category as DailyWeeklyRoadmapTask['category'],
     recommendedActivity: 'Solve 1 Medium difficulty dynamic programming or recursion challenge in PlacePrep IDE',
     estimatedMinutes: Math.min(60, Math.round(dailyTime * 0.5)),
     priority: 'High',

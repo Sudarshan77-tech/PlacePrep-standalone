@@ -6,7 +6,6 @@ import { usePlacePrep } from '@/context/PlacePrepContext';
 import { codingProblems } from '@/data/mockData';
 import { CodingProblem } from '@/types';
 import {
-  Code2,
   Play,
   Send,
   CheckCircle2,
@@ -99,36 +98,36 @@ export default function CodingPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold badge-soft-blue">
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold badge-soft-purple">
                 Coding Practice
               </span>
-              <span className="text-xs text-[#8896AB]">DSA & Technical Rounds</span>
+              <span className="text-xs text-zinc-400">DSA & Technical Rounds</span>
             </div>
-            <h1 className="text-2xl font-black text-[#142748] mt-1">
+            <h1 className="text-2xl font-black text-white mt-1">
               Coding Challenges & Sandbox IDE
             </h1>
           </div>
 
           {/* Quick Metrics */}
           <div className="flex items-center gap-2.5">
-            <div className="px-3 py-1.5 bg-white border border-[#E3EAF5] rounded-xl text-xs shadow-2xs">
-              <span className="text-[#8896AB]">Solved:</span>{' '}
-              <strong className="text-[#142748]">{stats.problemsSolved}</strong>
+            <div className="px-3 py-1.5 bg-[#181824] border border-[#26263A] rounded-xl text-xs">
+              <span className="text-zinc-400">Solved:</span>{' '}
+              <strong className="text-white">{stats.problemsSolved}</strong>
             </div>
-            <div className="px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-xl text-xs font-semibold text-amber-800 flex items-center gap-1">
-              <Flame className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+            <div className="px-3 py-1.5 bg-amber-950/40 border border-amber-500/30 rounded-xl text-xs font-semibold text-amber-300 flex items-center gap-1">
+              <Flame className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
               <span>{stats.currentStreak}d streak</span>
             </div>
-            <div className="px-3 py-1.5 badge-soft-blue rounded-xl text-xs font-semibold">
+            <div className="px-3 py-1.5 badge-soft-purple rounded-xl text-xs font-semibold">
               Score: {stats.codingScore}%
             </div>
           </div>
         </div>
 
         {/* Filter Pills */}
-        <div className="app-card p-3 flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-[#8896AB] pl-1 mr-1">
-            <Filter className="w-3.5 h-3.5" />
+        <div className="app-card p-3 flex flex-wrap items-center gap-2 border-[#232334]">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-zinc-400 pl-1 mr-1">
+            <Filter className="w-3.5 h-3.5 text-purple-400" />
             <span>Filter:</span>
           </div>
 
@@ -138,15 +137,15 @@ export default function CodingPage() {
               onClick={() => setFilterDifficulty(diff)}
               className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
                 filterDifficulty === diff
-                  ? 'bg-[#315BFA] text-white'
-                  : 'bg-[#F7F9FC] text-[#52627A] hover:bg-[#E3EAF5]'
+                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-[0_0_10px_rgba(124,58,237,0.3)]'
+                  : 'bg-[#181824] border border-[#232334] text-zinc-400 hover:text-white hover:bg-[#202030]'
               }`}
             >
               {diff === 'all' ? 'All' : diff}
             </button>
           ))}
 
-          <div className="h-4 w-px bg-[#E3EAF5] mx-1 hidden sm:block" />
+          <div className="h-4 w-px bg-[#232334] mx-1 hidden sm:block" />
 
           {allTags.map((tag) => (
             <button
@@ -154,8 +153,8 @@ export default function CodingPage() {
               onClick={() => setFilterTag(filterTag === tag ? 'all' : tag)}
               className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
                 filterTag === tag
-                  ? 'bg-[#142748] text-white'
-                  : 'bg-[#F7F9FC] text-[#52627A] hover:bg-[#E3EAF5]'
+                  ? 'bg-purple-900/60 text-purple-200 border border-purple-500/40'
+                  : 'bg-[#181824] border border-[#232334] text-zinc-400 hover:text-white hover:bg-[#202030]'
               }`}
             >
               {tag}
@@ -173,8 +172,8 @@ export default function CodingPage() {
                 onClick={() => handleSelectProblem(prob)}
                 className={`px-3.5 py-2 rounded-xl border text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 ${
                   isSelected
-                    ? 'bg-[#315BFA] text-white border-[#315BFA] shadow-xs'
-                    : 'bg-white border-[#E3EAF5] text-[#142748] hover:border-[#315BFA]/50 hover:bg-[#F7F9FC]'
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white border-purple-500 shadow-[0_0_12px_rgba(124,58,237,0.35)]'
+                    : 'bg-[#13131C] border-[#232334] text-zinc-300 hover:border-purple-500/40 hover:bg-[#181824]'
                 }`}
               >
                 <span>{prob.title}</span>
@@ -182,10 +181,10 @@ export default function CodingPage() {
                   isSelected
                     ? 'bg-white/20 text-white'
                     : prob.difficulty === 'Easy'
-                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                    ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-500/30'
                     : prob.difficulty === 'Medium'
-                    ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                    : 'bg-rose-50 text-rose-700 border border-rose-200'
+                    ? 'bg-amber-950/60 text-amber-300 border border-amber-500/30'
+                    : 'bg-rose-950/60 text-rose-300 border border-rose-500/30'
                 }`}>
                   {prob.difficulty}
                 </span>
@@ -197,46 +196,46 @@ export default function CodingPage() {
         {/* SPLIT SCREEN: LEFT STATEMENT | RIGHT CODE EDITOR */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[580px]">
           {/* Left: Problem Details (5 Cols) */}
-          <div className="lg:col-span-5 app-card p-6 flex flex-col justify-between overflow-y-auto max-h-[680px]">
+          <div className="lg:col-span-5 app-card p-6 flex flex-col justify-between overflow-y-auto max-h-[680px] border-[#232334]">
             <div>
-              <div className="flex items-center justify-between pb-3 border-b border-[#E3EAF5]">
+              <div className="flex items-center justify-between pb-3 border-b border-[#232334]">
                 <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
                   selectedProblem.difficulty === 'Easy'
-                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                    ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-500/30'
                     : selectedProblem.difficulty === 'Medium'
-                    ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                    : 'bg-rose-50 text-rose-700 border border-rose-200'
+                    ? 'bg-amber-950/60 text-amber-300 border border-amber-500/30'
+                    : 'bg-rose-950/60 text-rose-300 border border-rose-500/30'
                 }`}>
                   {selectedProblem.difficulty}
                 </span>
-                <span className="text-xs text-[#8896AB]">Acceptance: {selectedProblem.acceptance}</span>
+                <span className="text-xs text-zinc-400">Acceptance: {selectedProblem.acceptance}</span>
               </div>
 
-              <h2 className="text-lg font-bold text-[#142748] mt-3">{selectedProblem.title}</h2>
+              <h2 className="text-lg font-bold text-white mt-3">{selectedProblem.title}</h2>
 
               {/* Tags */}
               <div className="flex flex-wrap gap-1.5 mt-2 mb-3">
                 {selectedProblem.tags.map((t, idx) => (
-                  <span key={idx} className="px-2 py-0.5 bg-[#F7F9FC] border border-[#E3EAF5] text-[#52627A] rounded text-[11px] font-medium">
+                  <span key={idx} className="px-2 py-0.5 bg-[#181824] border border-[#232334] text-zinc-300 rounded text-[11px] font-medium">
                     {t}
                   </span>
                 ))}
               </div>
 
               {/* Description */}
-              <div className="text-xs sm:text-sm text-[#52627A] leading-relaxed whitespace-pre-line">
+              <div className="text-xs sm:text-sm text-zinc-300 leading-relaxed whitespace-pre-line">
                 {selectedProblem.description}
               </div>
 
               {/* Examples */}
               <div className="mt-5 space-y-2.5">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[#8896AB]">Examples</h3>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400">Examples</h3>
                 {selectedProblem.examples.map((ex, i) => (
-                  <div key={i} className="p-3 bg-[#F7F9FC] rounded-xl border border-[#E3EAF5] font-mono text-xs">
-                    <div className="text-[#52627A]"><span className="text-[#8896AB]">Input:</span> {ex.input}</div>
-                    <div className="text-[#142748] font-bold mt-1"><span className="text-[#8896AB] font-normal">Output:</span> {ex.output}</div>
+                  <div key={i} className="p-3 bg-[#181824] rounded-xl border border-[#232334] font-mono text-xs">
+                    <div className="text-zinc-400"><span className="text-zinc-500">Input:</span> {ex.input}</div>
+                    <div className="text-white font-bold mt-1"><span className="text-zinc-500 font-normal">Output:</span> {ex.output}</div>
                     {ex.explanation && (
-                      <div className="text-[#8896AB] font-sans text-[11px] mt-1 pt-1 border-t border-[#E3EAF5]">
+                      <div className="text-zinc-400 font-sans text-[11px] mt-1 pt-1 border-t border-[#232334]">
                         Explanation: {ex.explanation}
                       </div>
                     )}
@@ -246,8 +245,8 @@ export default function CodingPage() {
 
               {/* Constraints */}
               <div className="mt-5">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[#8896AB] mb-1.5">Constraints</h3>
-                <ul className="space-y-1 text-xs text-[#52627A] list-disc list-inside">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1.5">Constraints</h3>
+                <ul className="space-y-1 text-xs text-zinc-300 list-disc list-inside">
                   {selectedProblem.constraints.map((c, i) => (
                     <li key={i} className="font-mono text-[11px]">{c}</li>
                   ))}
@@ -257,21 +256,21 @@ export default function CodingPage() {
           </div>
 
           {/* Right: Code Editor & Execution Panel (7 Cols) */}
-          <div className="lg:col-span-7 bg-[#142748] rounded-2xl border border-[#23385D] shadow-card flex flex-col justify-between overflow-hidden">
+          <div className="lg:col-span-7 bg-[#0E0E16] rounded-2xl border border-[#232334] shadow-[0_4px_25px_rgba(0,0,0,0.5)] flex flex-col justify-between overflow-hidden">
             {/* Editor Top Bar */}
-            <div className="bg-[#0D1D38] px-4 py-2.5 border-b border-[#23385D] flex items-center justify-between">
+            <div className="bg-[#13131C] px-4 py-2.5 border-b border-[#232334] flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
-                <span className="text-xs font-mono text-slate-400 ml-1">solution.{selectedLang === 'python' ? 'py' : selectedLang === 'cpp' ? 'cpp' : selectedLang === 'java' ? 'java' : 'js'}</span>
+                <span className="text-xs font-mono text-zinc-400 ml-1">solution.{selectedLang === 'python' ? 'py' : selectedLang === 'cpp' ? 'cpp' : selectedLang === 'java' ? 'java' : 'js'}</span>
               </div>
 
               {/* Language Selector */}
               <select
                 value={selectedLang}
-                onChange={(e) => handleLanguageChange(e.target.value as any)}
-                className="bg-[#1C3256] border border-[#2E4874] text-white text-xs rounded-lg px-2.5 py-1 focus:outline-none focus:ring-1 focus:ring-[#315BFA]"
+                onChange={(e) => handleLanguageChange(e.target.value as 'cpp' | 'python' | 'java' | 'javascript')}
+                className="bg-[#181824] border border-[#26263A] text-white text-xs rounded-lg px-2.5 py-1 focus:outline-none focus:border-purple-500"
               >
                 <option value="python">Python 3</option>
                 <option value="cpp">C++ 20</option>
@@ -281,25 +280,25 @@ export default function CodingPage() {
             </div>
 
             {/* Code Editor Area */}
-            <div className="flex-1 p-4 bg-[#142748] font-mono text-xs sm:text-sm">
+            <div className="flex-1 p-4 bg-[#0A0A10] font-mono text-xs sm:text-sm">
               <textarea
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 rows={15}
                 spellCheck={false}
-                className="w-full h-full bg-transparent text-emerald-300 font-mono text-xs sm:text-sm focus:outline-none resize-none leading-relaxed selection:bg-[#315BFA]/40"
+                className="w-full h-full bg-transparent text-purple-200 font-mono text-xs sm:text-sm focus:outline-none resize-none leading-relaxed selection:bg-purple-600/40"
               />
             </div>
 
             {/* Testcase & Execution Results Drawer */}
             {runResult.status !== 'idle' && (
-              <div className="bg-[#0D1D38] border-t border-[#23385D] p-3.5 font-mono text-xs">
-                <div className="flex items-center justify-between pb-1.5 border-b border-[#23385D] mb-1.5">
+              <div className="bg-[#111119] border-t border-[#232334] p-3.5 font-mono text-xs">
+                <div className="flex items-center justify-between pb-1.5 border-b border-[#232334] mb-1.5">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                     <span className="text-emerald-400 font-bold">{runResult.testCasesPassed}</span>
                   </div>
-                  <div className="flex items-center gap-3 text-slate-400 text-[11px]">
+                  <div className="flex items-center gap-3 text-zinc-400 text-[11px]">
                     <span className="flex items-center gap-1">
                       <Clock className="w-3 h-3" /> {runResult.runtime}
                     </span>
@@ -308,16 +307,16 @@ export default function CodingPage() {
                     </span>
                   </div>
                 </div>
-                <div className="text-slate-300 text-[11px]">
+                <div className="text-zinc-300 text-[11px]">
                   Output: {runResult.output}
                 </div>
               </div>
             )}
 
             {/* Action Bar */}
-            <div className="bg-[#0D1D38] p-3.5 border-t border-[#23385D] flex items-center justify-between">
-              <div className="flex items-center gap-2 text-slate-400 text-xs font-mono">
-                <Terminal className="w-3.5 h-3.5 text-[#315BFA]" />
+            <div className="bg-[#13131C] p-3.5 border-t border-[#232334] flex items-center justify-between">
+              <div className="flex items-center gap-2 text-zinc-400 text-xs font-mono">
+                <Terminal className="w-3.5 h-3.5 text-purple-400" />
                 <span>Compiler Sandbox Active</span>
               </div>
 
@@ -325,7 +324,7 @@ export default function CodingPage() {
                 <button
                   onClick={handleRunCode}
                   disabled={isRunning || isSubmitting}
-                  className="px-3.5 py-1.5 bg-[#1C3256] hover:bg-[#28436E] disabled:opacity-50 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all"
+                  className="px-3.5 py-1.5 bg-[#181824] hover:bg-[#202030] border border-[#28283C] disabled:opacity-50 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all"
                 >
                   {isRunning ? (
                     <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -340,7 +339,7 @@ export default function CodingPage() {
                 <button
                   onClick={handleSubmitCode}
                   disabled={isRunning || isSubmitting}
-                  className="px-4 py-1.5 bg-[#315BFA] hover:bg-[#2548DE] disabled:opacity-50 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-xs transition-all"
+                  className="btn-primary !py-1.5 !px-4 text-xs font-bold shadow-[0_0_15px_rgba(124,58,237,0.4)] disabled:opacity-50 flex items-center gap-1.5"
                 >
                   {isSubmitting ? (
                     <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />

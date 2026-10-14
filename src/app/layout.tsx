@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#2563eb',
+  themeColor: '#7C3AED',
   width: 'device-width',
   initialScale: 1,
 };
@@ -20,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="antialiased bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white">
+    <html lang="en" className="dark">
+      <body className="antialiased bg-[#08080C] text-zinc-100 selection:bg-purple-600 selection:text-white">
         <PlacePrepProvider>
           {children}
         </PlacePrepProvider>

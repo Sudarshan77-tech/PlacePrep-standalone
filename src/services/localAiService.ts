@@ -12,7 +12,6 @@ export interface InterviewEvaluationRequest {
 }
 
 export function evaluateInterviewLocally(req: InterviewEvaluationRequest): InterviewEvaluation {
-  const answerLen = req.answer.trim().length;
   const words = req.answer.trim().split(/\s+/).filter(Boolean);
   const wordCount = words.length;
 

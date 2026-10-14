@@ -27,7 +27,6 @@ export default function TechnicalPage() {
   // Test state
   const [currentIdx, setCurrentIdx] = useState<number>(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
-  const [timeLeft, setTimeLeft] = useState<number>(180);
 
   const getTopicIcon = (name: string) => {
     switch (name) {
@@ -47,7 +46,6 @@ export default function TechnicalPage() {
     setTestFinished(false);
     setCurrentIdx(0);
     setAnswers({});
-    setTimeLeft(180);
   };
 
   const handleSelectOption = (optIdx: number) => {
@@ -82,12 +80,12 @@ export default function TechnicalPage() {
               <span className="px-2.5 py-0.5 rounded-full text-xs font-bold badge-soft-purple">
                 Core Computer Science
               </span>
-              <span className="text-xs text-[#8896AB]">7 Essential Subjects</span>
+              <span className="text-xs text-zinc-400">7 Essential Subjects</span>
             </div>
-            <h1 className="text-2xl font-black text-[#142748] mt-1">
+            <h1 className="text-2xl font-black text-white mt-1">
               Technical MCQs & Concept Mastery
             </h1>
-            <p className="text-xs sm:text-sm text-[#52627A]">
+            <p className="text-xs sm:text-sm text-zinc-400">
               Prepare for technical screening rounds in DBMS, Operating Systems, Computer Networks, and OOP.
             </p>
           </div>
@@ -95,23 +93,23 @@ export default function TechnicalPage() {
 
         {/* ACTIVE TEST INTERFACE */}
         {isTestActive && selectedTopic && (
-          <div className="app-card p-6 sm:p-7 space-y-4">
-            <div className="flex items-center justify-between pb-4 border-b border-[#E3EAF5]">
+          <div className="app-card p-6 sm:p-7 space-y-4 border-[#232334]">
+            <div className="flex items-center justify-between pb-4 border-b border-[#232334]">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#315BFA]">
+                <span className="text-xs font-bold uppercase tracking-wider text-purple-400">
                   {selectedTopic.title} • Question {currentIdx + 1} of {sampleTechQuestions.length}
                 </span>
-                <span className="ml-2 px-2 py-0.5 rounded text-[11px] font-semibold bg-[#F7F9FC] border border-[#E3EAF5] text-[#52627A]">
+                <span className="ml-2 px-2 py-0.5 rounded text-[11px] font-semibold bg-[#181824] border border-[#232334] text-zinc-300">
                   {sampleTechQuestions[currentIdx].difficulty}
                 </span>
               </div>
-              <div className="flex items-center gap-1.5 px-3 py-1 bg-rose-50 text-rose-700 rounded-lg text-xs font-bold border border-rose-200">
+              <div className="flex items-center gap-1.5 px-3 py-1 bg-rose-950/50 text-rose-300 rounded-lg text-xs font-bold border border-rose-500/30">
                 <Clock className="w-3.5 h-3.5" />
                 <span>Timed Drill</span>
               </div>
             </div>
 
-            <h2 className="text-base sm:text-lg font-bold text-[#142748] leading-relaxed">
+            <h2 className="text-base sm:text-lg font-bold text-white leading-relaxed">
               {sampleTechQuestions[currentIdx].question}
             </h2>
 
@@ -124,20 +122,20 @@ export default function TechnicalPage() {
                     onClick={() => handleSelectOption(optIdx)}
                     className={`w-full text-left p-3.5 rounded-xl border text-xs sm:text-sm font-medium transition-all flex items-center justify-between ${
                       isSelected
-                        ? 'bg-[#F1EDFF] border-[#DDD6FE] text-[#142748] shadow-xs'
-                        : 'bg-white border-[#E3EAF5] hover:border-[#CBD8EC] hover:bg-[#F7F9FC] text-[#52627A]'
+                        ? 'bg-gradient-to-r from-purple-950/70 to-indigo-950/70 border-purple-500 text-white shadow-[0_0_15px_rgba(124,58,237,0.3)]'
+                        : 'bg-[#181824] border-[#26263A] hover:border-purple-500/40 hover:bg-[#202030] text-zinc-300'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold ${
-                        isSelected ? 'bg-[#5B21B6] text-white' : 'bg-[#F7F9FC] border border-[#E3EAF5] text-[#52627A]'
+                        isSelected ? 'bg-gradient-to-tr from-purple-600 to-indigo-600 text-white' : 'bg-[#13131C] border border-[#232334] text-zinc-400'
                       }`}>
                         {String.fromCharCode(65 + optIdx)}
                       </span>
                       <span>{opt}</span>
                     </div>
                     <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                      isSelected ? 'border-[#5B21B6] bg-[#5B21B6]' : 'border-[#CBD8EC]'
+                      isSelected ? 'border-purple-500 bg-purple-600 shadow-[0_0_8px_rgba(168,85,247,0.6)]' : 'border-[#38384E]'
                     }`}>
                       {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                     </div>
@@ -146,7 +144,7 @@ export default function TechnicalPage() {
               })}
             </div>
 
-            <div className="mt-6 pt-4 border-t border-[#E3EAF5] flex items-center justify-between">
+            <div className="mt-6 pt-4 border-t border-[#232334] flex items-center justify-between">
               <button
                 disabled={currentIdx === 0}
                 onClick={() => setCurrentIdx(prev => prev - 1)}
@@ -166,7 +164,7 @@ export default function TechnicalPage() {
               ) : (
                 <button
                   onClick={handleFinishTest}
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-xs"
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold shadow-[0_0_15px_rgba(16,185,129,0.4)] transition-all"
                 >
                   Submit Answers
                 </button>
@@ -177,13 +175,13 @@ export default function TechnicalPage() {
 
         {/* RESULTS SCREEN */}
         {testFinished && (
-          <div className="app-card p-6 sm:p-7 space-y-6">
-            <div className="flex items-center justify-between pb-4 border-b border-[#E3EAF5]">
+          <div className="app-card p-6 sm:p-7 space-y-6 border-[#232334]">
+            <div className="flex items-center justify-between pb-4 border-b border-[#232334]">
               <div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-950/60 text-emerald-300 border border-emerald-500/30">
                   Assessment Completed
                 </span>
-                <h2 className="text-xl font-bold text-[#142748] mt-1">
+                <h2 className="text-xl font-bold text-white mt-1">
                   {selectedTopic?.title} MCQ Drill Result
                 </h2>
               </div>
@@ -197,46 +195,46 @@ export default function TechnicalPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-              <div className="p-4 rounded-xl bg-[#F7F9FC] border border-[#E3EAF5] text-center">
-                <span className="text-xs text-[#8896AB] uppercase font-bold">Accuracy</span>
-                <p className="text-2xl font-black text-[#315BFA] mt-1">
+              <div className="p-4 rounded-xl bg-[#181824] border border-[#232334] text-center">
+                <span className="text-xs text-zinc-400 uppercase font-bold">Accuracy</span>
+                <p className="text-2xl font-black text-purple-400 mt-1">
                   {Math.round((correctCount / sampleTechQuestions.length) * 100)}%
                 </p>
-                <span className="text-[11px] text-[#8896AB]">{correctCount} of {sampleTechQuestions.length} correct</span>
+                <span className="text-[11px] text-zinc-400">{correctCount} of {sampleTechQuestions.length} correct</span>
               </div>
-              <div className="p-4 rounded-xl bg-[#F7F9FC] border border-[#E3EAF5] text-center">
-                <span className="text-xs text-[#8896AB] uppercase font-bold">Category Benchmark</span>
-                <p className="text-2xl font-black text-emerald-600 mt-1">75%</p>
-                <span className="text-[11px] text-[#8896AB]">Target cutoff for screening</span>
+              <div className="p-4 rounded-xl bg-[#181824] border border-[#232334] text-center">
+                <span className="text-xs text-zinc-400 uppercase font-bold">Category Benchmark</span>
+                <p className="text-2xl font-black text-emerald-400 mt-1">75%</p>
+                <span className="text-[11px] text-zinc-400">Target cutoff for screening</span>
               </div>
-              <div className="p-4 rounded-xl bg-[#F7F9FC] border border-[#E3EAF5] text-center">
-                <span className="text-xs text-[#8896AB] uppercase font-bold">Status</span>
-                <p className="text-lg font-bold text-[#142748] mt-2">
+              <div className="p-4 rounded-xl bg-[#181824] border border-[#232334] text-center">
+                <span className="text-xs text-zinc-400 uppercase font-bold">Status</span>
+                <p className="text-lg font-bold text-white mt-2">
                   {correctCount >= 2 ? 'Meets Cutoff' : 'Needs Practice'}
                 </p>
               </div>
             </div>
 
             <div className="space-y-3 pt-2">
-              <h3 className="text-sm font-bold text-[#142748]">Question Review</h3>
+              <h3 className="text-sm font-bold text-white">Question Review</h3>
               {sampleTechQuestions.map((q, idx) => {
                 const userAns = answers[idx];
                 const isCorrect = userAns === q.correctAnswer;
                 return (
-                  <div key={q.id} className="p-4 rounded-xl border border-[#E3EAF5] bg-white space-y-1.5 text-xs">
+                  <div key={q.id} className="p-4 rounded-xl border border-[#26263A] bg-[#181824] space-y-1.5 text-xs">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-[#8896AB]">Question {idx + 1}</span>
+                      <span className="font-bold text-zinc-400">Question {idx + 1}</span>
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        isCorrect ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
+                        isCorrect ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-500/30' : 'bg-rose-950/60 text-rose-300 border border-rose-500/30'
                       }`}>
                         {isCorrect ? '✓ Correct' : '✗ Incorrect'}
                       </span>
                     </div>
-                    <p className="font-semibold text-[#142748]">{q.question}</p>
-                    <p className="text-[#52627A]">
-                      Correct: <strong className="text-emerald-700">{q.options[q.correctAnswer]}</strong>
+                    <p className="font-semibold text-white">{q.question}</p>
+                    <p className="text-zinc-300">
+                      Correct: <strong className="text-emerald-400">{q.options[q.correctAnswer]}</strong>
                     </p>
-                    <div className="p-2 bg-[#F7F9FC] rounded-lg text-[11px] text-[#52627A] border border-[#E3EAF5]">
+                    <div className="p-2.5 bg-[#13131C] rounded-lg text-[11px] text-zinc-300 border border-[#232334]">
                       {q.explanation}
                     </div>
                   </div>
@@ -254,23 +252,23 @@ export default function TechnicalPage() {
               return (
                 <div
                   key={topic.id}
-                  className="app-card-hover p-5 flex flex-col justify-between"
+                  className="app-card-hover p-5 flex flex-col justify-between border-[#232334]"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <div className="w-9 h-9 rounded-lg bg-[#F1EDFF] border border-[#DDD6FE] text-[#5B21B6] flex items-center justify-center">
+                      <div className="w-9 h-9 rounded-lg bg-purple-950/60 border border-purple-500/40 text-purple-300 flex items-center justify-center">
                         <Icon className="w-4 h-4" />
                       </div>
-                      <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[#F7F9FC] border border-[#E3EAF5] text-[#52627A]">
+                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#181824] border border-[#232334] text-zinc-300">
                         {topic.questionsCount} MCQs
                       </span>
                     </div>
-                    <h3 className="text-base font-bold text-[#142748]">{topic.title}</h3>
-                    <p className="text-xs text-[#52627A] mt-1 leading-relaxed">{topic.shortDesc}</p>
+                    <h3 className="text-base font-bold text-white">{topic.title}</h3>
+                    <p className="text-xs text-zinc-400 mt-1 leading-relaxed">{topic.shortDesc}</p>
                   </div>
 
-                  <div className="mt-5 pt-3.5 border-t border-[#E3EAF5] flex items-center justify-between">
-                    <span className="text-xs text-[#8896AB]">Difficulty: {topic.difficulty}</span>
+                  <div className="mt-5 pt-3.5 border-t border-[#232334] flex items-center justify-between">
+                    <span className="text-xs text-zinc-400">Difficulty: {topic.difficulty}</span>
                     <button
                       onClick={() => handleStartTest(topic)}
                       className="btn-primary text-xs"

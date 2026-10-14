@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { usePlacePrep } from '@/context/PlacePrepContext';
 import { aptitudeCategories, sampleAptitudeQuestions } from '@/data/mockData';
@@ -8,14 +8,11 @@ import { AptitudeQuestion } from '@/types';
 import {
   BrainCircuit,
   Clock,
-  CheckCircle2,
-  XCircle,
   RotateCcw,
   Flag,
   ArrowRight,
   ArrowLeft,
-  Filter,
-  Sparkles
+  Filter
 } from 'lucide-react';
 
 export default function AptitudePage() {
@@ -25,11 +22,27 @@ export default function AptitudePage() {
   const [quizFinished, setQuizFinished] = useState<boolean>(false);
 
   // Quiz state
-  const [questions, setQuestions] = useState<AptitudeQuestion[]>(sampleAptitudeQuestions);
+  const [questions] = useState<AptitudeQuestion[]>(sampleAptitudeQuestions);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<number>>(new Set());
   const [timeLeft, setTimeLeft] = useState<number>(300); // 5 mins
+  const [activeTopic, setActiveTopic] = useState<string>('Quantitative Aptitude');
+
+  const handleFinishQuiz = useCallback(() => {
+    setQuizFinished(true);
+    setIsQuizActive(false);
+
+    let correct = 0;
+    questions.forEach((q, idx) => {
+      if (selectedAnswers[idx] === q.correctAnswer) {
+        correct++;
+      }
+    });
+
+    const scorePct = Math.round((correct / questions.length) * 100);
+    recordActivity(`${activeTopic} Practice Drill`, 'Aptitude', `${scorePct}% (${correct}/${questions.length})`);
+  }, [questions, selectedAnswers, recordActivity, activeTopic]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -45,9 +58,12 @@ export default function AptitudePage() {
       }, 1000);
     }
     return () => clearInterval(timer);
-  }, [isQuizActive, quizFinished, timeLeft]);
+  }, [isQuizActive, quizFinished, timeLeft, handleFinishQuiz]);
 
   const startQuiz = (topicTitle?: string) => {
+    if (topicTitle) {
+      setActiveTopic(topicTitle);
+    }
     setIsQuizActive(true);
     setQuizFinished(false);
     setCurrentIndex(0);
@@ -75,21 +91,6 @@ export default function AptitudePage() {
     });
   };
 
-  const handleFinishQuiz = () => {
-    setQuizFinished(true);
-    setIsQuizActive(false);
-
-    let correct = 0;
-    questions.forEach((q, idx) => {
-      if (selectedAnswers[idx] === q.correctAnswer) {
-        correct++;
-      }
-    });
-
-    const scorePct = Math.round((correct / questions.length) * 100);
-    recordActivity('Aptitude Practice Drill', 'Aptitude', `${scorePct}% (${correct}/${questions.length})`);
-  };
-
   const correctCount = questions.filter((q, idx) => selectedAnswers[idx] === q.correctAnswer).length;
   const wrongCount = questions.filter((q, idx) => selectedAnswers[idx] !== undefined && selectedAnswers[idx] !== q.correctAnswer).length;
   const unansweredCount = questions.length - Object.keys(selectedAnswers).length;
@@ -110,15 +111,15 @@ export default function AptitudePage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold badge-soft-blue">
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold badge-soft-purple">
                 Aptitude & Reasoning
               </span>
-              <span className="text-xs text-[#8896AB]">4 Core Categories</span>
+              <span className="text-xs text-zinc-400">4 Core Categories</span>
             </div>
-            <h1 className="text-2xl font-black text-[#142748] mt-1">
+            <h1 className="text-2xl font-black text-white mt-1">
               Aptitude Practice & Speed Drills
             </h1>
-            <p className="text-xs sm:text-sm text-[#52627A]">
+            <p className="text-xs sm:text-sm text-zinc-400">
               Master quantitative shortcuts, logical deduction, and verbal patterns for campus entrance tests.
             </p>
           </div>
@@ -126,7 +127,7 @@ export default function AptitudePage() {
           {!isQuizActive && !quizFinished && (
             <button
               onClick={() => startQuiz()}
-              className="btn-primary text-xs sm:text-sm"
+              className="btn-primary text-xs sm:text-sm shadow-[0_0_18px_rgba(124,58,237,0.4)]"
             >
               <Clock className="w-4 h-4" />
               <span>Start 5-Min Speed Drill</span>
@@ -136,23 +137,23 @@ export default function AptitudePage() {
 
         {/* QUIZ INTERFACE */}
         {isQuizActive && (
-          <div className="app-card p-6 sm:p-7 space-y-4">
+          <div className="app-card p-6 sm:p-7 space-y-4 border-[#232334]">
             {/* Top Bar: Progress & Timer */}
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#E3EAF5]">
+            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#232334]">
               <div className="flex items-center gap-3">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#8896AB]">
+                <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
                   Question {currentIndex + 1} of {questions.length}
                 </span>
-                <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#F7F9FC] border border-[#E3EAF5] text-[#52627A]">
+                <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#181824] border border-[#232334] text-zinc-300">
                   {questions[currentIndex].difficulty}
                 </span>
-                <span className="text-xs text-[#52627A] hidden sm:inline">
+                <span className="text-xs text-zinc-400 hidden sm:inline">
                   {questions[currentIndex].topic}
                 </span>
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5 px-3 py-1 bg-rose-50 text-rose-700 rounded-lg text-xs font-bold border border-rose-200">
+                <div className="flex items-center gap-1.5 px-3 py-1 bg-rose-950/50 text-rose-300 rounded-lg text-xs font-bold border border-rose-500/30">
                   <Clock className="w-4 h-4" />
                   <span>{formatTime(timeLeft)}</span>
                 </div>
@@ -160,8 +161,8 @@ export default function AptitudePage() {
                   onClick={toggleFlag}
                   className={`p-1.5 rounded-lg border text-xs font-medium transition-all ${
                     flaggedQuestions.has(currentIndex)
-                      ? 'bg-amber-50 border-amber-300 text-amber-700'
-                      : 'border-[#E3EAF5] text-[#52627A] hover:bg-[#F7F9FC]'
+                      ? 'bg-amber-950/60 border-amber-500/40 text-amber-300'
+                      : 'border-[#232334] text-zinc-400 hover:bg-[#181824] hover:text-white'
                   }`}
                   title="Mark for review"
                   aria-label="Flag question"
@@ -173,7 +174,7 @@ export default function AptitudePage() {
 
             {/* Question Text */}
             <div className="py-4">
-              <h2 className="text-base sm:text-lg font-bold text-[#142748] leading-relaxed">
+              <h2 className="text-base sm:text-lg font-bold text-white leading-relaxed">
                 {questions[currentIndex].question}
               </h2>
 
@@ -187,20 +188,20 @@ export default function AptitudePage() {
                       onClick={() => handleSelectOption(optIdx)}
                       className={`w-full text-left p-3.5 rounded-xl border text-xs sm:text-sm font-medium transition-all flex items-center justify-between ${
                         isSelected
-                          ? 'bg-[#EEF2FF] border-[#315BFA] text-[#142748] shadow-xs'
-                          : 'bg-white border-[#E3EAF5] hover:border-[#CBD8EC] hover:bg-[#F7F9FC] text-[#52627A]'
+                          ? 'bg-gradient-to-r from-purple-950/70 to-indigo-950/70 border-purple-500 text-white shadow-[0_0_15px_rgba(124,58,237,0.3)]'
+                          : 'bg-[#181824] border-[#26263A] hover:border-purple-500/40 hover:bg-[#202030] text-zinc-300'
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold ${
-                          isSelected ? 'bg-[#315BFA] text-white' : 'bg-[#F7F9FC] border border-[#E3EAF5] text-[#52627A]'
+                          isSelected ? 'bg-gradient-to-tr from-purple-600 to-indigo-600 text-white' : 'bg-[#13131C] border border-[#232334] text-zinc-400'
                         }`}>
                           {String.fromCharCode(65 + optIdx)}
                         </span>
                         <span>{option}</span>
                       </div>
                       <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                        isSelected ? 'border-[#315BFA] bg-[#315BFA]' : 'border-[#CBD8EC]'
+                        isSelected ? 'border-purple-500 bg-purple-600 shadow-[0_0_8px_rgba(168,85,247,0.6)]' : 'border-[#38384E]'
                       }`}>
                         {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                       </div>
@@ -211,7 +212,7 @@ export default function AptitudePage() {
             </div>
 
             {/* Bottom Bar: Navigator & Next/Prev Actions */}
-            <div className="pt-4 border-t border-[#E3EAF5] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="pt-4 border-t border-[#232334] flex flex-col sm:flex-row items-center justify-between gap-4">
               {/* Question Pills */}
               <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-2 sm:pb-0">
                 {questions.map((_, i) => {
@@ -225,15 +226,15 @@ export default function AptitudePage() {
                       onClick={() => setCurrentIndex(i)}
                       className={`w-7 h-7 rounded-lg text-xs font-bold transition-all relative ${
                         isCurrent
-                          ? 'bg-[#315BFA] text-white'
+                          ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-[0_0_10px_rgba(124,58,237,0.4)]'
                           : isAnswered
-                          ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                          : 'bg-[#F7F9FC] border border-[#E3EAF5] text-[#52627A] hover:bg-[#E3EAF5]'
+                          ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-500/30'
+                          : 'bg-[#181824] border border-[#232334] text-zinc-400 hover:bg-[#202030] hover:text-white'
                       }`}
                     >
                       {i + 1}
                       {isFlagged && (
-                        <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full ring-1 ring-white" />
+                        <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-400 rounded-full ring-1 ring-[#08080C]" />
                       )}
                     </button>
                   );
@@ -262,7 +263,7 @@ export default function AptitudePage() {
                 ) : (
                   <button
                     onClick={handleFinishQuiz}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5"
+                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold shadow-[0_0_15px_rgba(16,185,129,0.4)] flex items-center gap-1.5 transition-all"
                   >
                     <span>Submit Drill</span>
                   </button>
@@ -274,16 +275,16 @@ export default function AptitudePage() {
 
         {/* RESULTS SCREEN */}
         {quizFinished && (
-          <div className="app-card p-6 sm:p-7 space-y-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-[#E3EAF5]">
+          <div className="app-card p-6 sm:p-7 space-y-6 border-[#232334]">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-[#232334]">
               <div>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-950/60 text-emerald-300 border border-emerald-500/30">
                   Performance Evaluation
                 </span>
-                <h2 className="text-xl font-bold text-[#142748] mt-1">
+                <h2 className="text-xl font-bold text-white mt-1">
                   Speed Drill Completed
                 </h2>
-                <p className="text-xs text-[#8896AB]">
+                <p className="text-xs text-zinc-400">
                   Time taken: {formatTime(300 - timeLeft)} • 5 Questions Attempted
                 </p>
               </div>
@@ -299,66 +300,66 @@ export default function AptitudePage() {
 
             {/* Score Metrics Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-              <div className="p-3.5 rounded-xl bg-[#F7F9FC] border border-[#E3EAF5] text-center">
-                <span className="text-xs text-[#8896AB] font-semibold uppercase">Score</span>
-                <p className="text-2xl font-black text-[#315BFA] mt-1">
+              <div className="p-3.5 rounded-xl bg-[#181824] border border-[#232334] text-center">
+                <span className="text-xs text-zinc-400 font-semibold uppercase">Score</span>
+                <p className="text-2xl font-black text-purple-400 mt-1">
                   {Math.round((correctCount / questions.length) * 100)}%
                 </p>
-                <span className="text-[11px] text-[#8896AB]">{correctCount} of {questions.length} Correct</span>
+                <span className="text-[11px] text-zinc-400">{correctCount} of {questions.length} Correct</span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#F7F9FC] border border-[#E3EAF5] text-center">
-                <span className="text-xs text-[#8896AB] font-semibold uppercase">Accuracy</span>
-                <p className="text-2xl font-black text-emerald-600 mt-1">{accuracy}%</p>
-                <span className="text-[11px] text-[#8896AB]">Attempted questions</span>
+              <div className="p-3.5 rounded-xl bg-[#181824] border border-[#232334] text-center">
+                <span className="text-xs text-zinc-400 font-semibold uppercase">Accuracy</span>
+                <p className="text-2xl font-black text-emerald-400 mt-1">{accuracy}%</p>
+                <span className="text-[11px] text-zinc-400">Attempted questions</span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#F7F9FC] border border-[#E3EAF5] text-center">
-                <span className="text-xs text-[#8896AB] font-semibold uppercase">Correct</span>
-                <p className="text-2xl font-black text-emerald-600 mt-1">{correctCount}</p>
-                <span className="text-[11px] text-[#8896AB]">Positive marks</span>
+              <div className="p-3.5 rounded-xl bg-[#181824] border border-[#232334] text-center">
+                <span className="text-xs text-zinc-400 font-semibold uppercase">Correct</span>
+                <p className="text-2xl font-black text-emerald-400 mt-1">{correctCount}</p>
+                <span className="text-[11px] text-zinc-400">Positive marks</span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#F7F9FC] border border-[#E3EAF5] text-center">
-                <span className="text-xs text-[#8896AB] font-semibold uppercase">Wrong / Skipped</span>
-                <p className="text-2xl font-black text-rose-500 mt-1">{wrongCount} / {unansweredCount}</p>
-                <span className="text-[11px] text-[#8896AB]">Review below</span>
+              <div className="p-3.5 rounded-xl bg-[#181824] border border-[#232334] text-center">
+                <span className="text-xs text-zinc-400 font-semibold uppercase">Wrong / Skipped</span>
+                <p className="text-2xl font-black text-rose-400 mt-1">{wrongCount} / {unansweredCount}</p>
+                <span className="text-[11px] text-zinc-400">Review below</span>
               </div>
             </div>
 
             {/* Answer Explanations Review */}
             <div className="space-y-3 pt-2">
-              <h3 className="text-sm font-bold text-[#142748]">Detailed Explanations</h3>
+              <h3 className="text-sm font-bold text-white">Detailed Explanations</h3>
               {questions.map((q, idx) => {
                 const userAns = selectedAnswers[idx];
                 const isCorrect = userAns === q.correctAnswer;
                 return (
-                  <div key={q.id} className="p-4 rounded-xl border border-[#E3EAF5] bg-white space-y-2">
+                  <div key={q.id} className="p-4 rounded-xl border border-[#26263A] bg-[#181824] space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-[#8896AB]">Question {idx + 1}</span>
+                      <span className="text-xs font-bold text-zinc-400">Question {idx + 1}</span>
                       <span className={`px-2 py-0.5 rounded text-[11px] font-bold ${
-                        isCorrect ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
+                        isCorrect ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-500/30' : 'bg-rose-950/60 text-rose-300 border border-rose-500/30'
                       }`}>
                         {isCorrect ? '✓ Correct' : '✗ Incorrect / Skipped'}
                       </span>
                     </div>
-                    <p className="text-xs sm:text-sm font-semibold text-[#142748]">{q.question}</p>
+                    <p className="text-xs sm:text-sm font-semibold text-white">{q.question}</p>
 
-                    <div className="text-xs text-[#52627A] space-y-0.5">
+                    <div className="text-xs text-zinc-300 space-y-0.5">
                       <p>
                         Your Answer:{' '}
-                        <span className={isCorrect ? 'font-bold text-emerald-700' : 'font-bold text-rose-600'}>
+                        <span className={isCorrect ? 'font-bold text-emerald-400' : 'font-bold text-rose-400'}>
                           {userAns !== undefined ? q.options[userAns] : 'Not Answered'}
                         </span>
                       </p>
                       <p>
                         Correct Answer:{' '}
-                        <span className="font-bold text-emerald-700">{q.options[q.correctAnswer]}</span>
+                        <span className="font-bold text-emerald-400">{q.options[q.correctAnswer]}</span>
                       </p>
                     </div>
 
-                    <div className="p-2.5 rounded-lg bg-[#F7F9FC] text-[11px] text-[#52627A] border border-[#E3EAF5]">
-                      <strong className="text-[#142748]">Explanation:</strong> {q.explanation}
+                    <div className="p-2.5 rounded-lg bg-[#13131C] text-[11px] text-zinc-300 border border-[#232334]">
+                      <strong className="text-purple-300">Explanation:</strong> {q.explanation}
                     </div>
                   </div>
                 );
@@ -372,7 +373,7 @@ export default function AptitudePage() {
           <>
             {/* Filters */}
             <div className="flex flex-wrap items-center gap-2">
-              <div className="flex items-center gap-1.5 text-xs text-[#8896AB] font-semibold">
+              <div className="flex items-center gap-1.5 text-xs text-zinc-400 font-semibold">
                 <Filter className="w-3.5 h-3.5" />
                 <span>Category:</span>
               </div>
@@ -380,8 +381,8 @@ export default function AptitudePage() {
                 onClick={() => setSelectedCategory('all')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   selectedCategory === 'all'
-                    ? 'bg-[#315BFA] text-white'
-                    : 'bg-white border border-[#E3EAF5] text-[#52627A] hover:bg-[#F7F9FC]'
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-[0_0_10px_rgba(124,58,237,0.3)]'
+                    : 'bg-[#181824] border border-[#232334] text-zinc-400 hover:text-white hover:bg-[#202030]'
                 }`}
               >
                 All Categories
@@ -392,8 +393,8 @@ export default function AptitudePage() {
                   onClick={() => setSelectedCategory(c.id)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     selectedCategory === c.id
-                      ? 'bg-[#315BFA] text-white'
-                      : 'bg-white border border-[#E3EAF5] text-[#52627A] hover:bg-[#F7F9FC]'
+                      ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-[0_0_10px_rgba(124,58,237,0.3)]'
+                      : 'bg-[#181824] border border-[#232334] text-zinc-400 hover:text-white hover:bg-[#202030]'
                   }`}
                 >
                   {c.title}
@@ -408,25 +409,25 @@ export default function AptitudePage() {
                 .map((category) => (
                   <div
                     key={category.id}
-                    className="app-card-hover p-6 flex flex-col justify-between"
+                    className="app-card-hover p-6 flex flex-col justify-between border-[#232334]"
                   >
                     <div>
                       <div className="flex items-center justify-between mb-3">
-                        <div className="w-9 h-9 rounded-lg bg-blue-50 text-[#315BFA] flex items-center justify-center">
+                        <div className="w-9 h-9 rounded-lg bg-purple-950/60 border border-purple-500/40 text-purple-300 flex items-center justify-center">
                           <BrainCircuit className="w-5 h-5" />
                         </div>
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[#F7F9FC] border border-[#E3EAF5] text-[#52627A]">
+                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#181824] border border-[#232334] text-zinc-300">
                           {category.questionCount} Questions
                         </span>
                       </div>
-                      <h3 className="text-base font-bold text-[#142748]">{category.title}</h3>
-                      <p className="text-xs text-[#52627A] mt-1 leading-relaxed">{category.description}</p>
+                      <h3 className="text-base font-bold text-white">{category.title}</h3>
+                      <p className="text-xs text-zinc-400 mt-1 leading-relaxed">{category.description}</p>
 
                       <div className="mt-3.5 flex flex-wrap gap-1.5">
                         {category.topics.map((t, idx) => (
                           <span
                             key={idx}
-                            className="px-2 py-0.5 rounded bg-[#F7F9FC] border border-[#E3EAF5] text-[11px] font-medium text-[#52627A]"
+                            className="px-2 py-0.5 rounded bg-[#181824] border border-[#232334] text-[11px] font-medium text-zinc-300"
                           >
                             {t}
                           </span>
@@ -434,8 +435,8 @@ export default function AptitudePage() {
                       </div>
                     </div>
 
-                    <div className="mt-5 pt-3.5 border-t border-[#E3EAF5] flex items-center justify-between">
-                      <span className="text-xs text-[#8896AB]">Avg Time: {category.avgTimeMins} mins</span>
+                    <div className="mt-5 pt-3.5 border-t border-[#232334] flex items-center justify-between">
+                      <span className="text-xs text-zinc-400">Avg Time: {category.avgTimeMins} mins</span>
                       <button
                         onClick={() => startQuiz(category.title)}
                         className="btn-primary text-xs"

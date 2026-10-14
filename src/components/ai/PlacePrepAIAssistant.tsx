@@ -159,12 +159,12 @@ export function PlacePrepAIAssistant() {
       {/* Floating Trigger Button */}
       <button
         onClick={() => setIsOpen(prev => !prev)}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 py-2.5 bg-[#315BFA] hover:bg-[#2548DE] text-white rounded-full shadow-dropdown transition-all duration-150 active:scale-95 group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#315BFA]"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 py-2.5 bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-full shadow-[0_0_24px_rgba(124,58,237,0.5)] transition-all duration-150 active:scale-95 group ring-1 ring-purple-400/40"
         aria-label="Open PlacePrep AI Placement Assistant"
       >
         <div className="relative">
           <Sparkles className="w-4 h-4 text-white" />
-          <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-emerald-400 rounded-full ring-2 ring-[#315BFA]" />
+          <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-emerald-400 rounded-full ring-2 ring-purple-900" />
         </div>
         <span className="font-semibold text-xs tracking-tight pr-0.5">PlacePrep AI</span>
       </button>
@@ -172,35 +172,35 @@ export function PlacePrepAIAssistant() {
       {/* Slide-over / Modal Chat Panel */}
       {isOpen && (
         <div
-          className={`fixed z-50 transition-all duration-200 flex flex-col bg-white border border-[#E3EAF5] shadow-dropdown rounded-2xl overflow-hidden ${
+          className={`fixed z-50 transition-all duration-200 flex flex-col bg-[#111119] border border-purple-500/30 shadow-[0_0_40px_rgba(124,58,237,0.22)] rounded-2xl overflow-hidden ${
             isExpanded
               ? 'inset-4 sm:inset-10 max-w-4xl mx-auto'
               : 'bottom-20 right-4 sm:right-6 w-[94vw] sm:w-[420px] h-[580px] max-h-[85vh]'
           }`}
         >
           {/* Header */}
-          <div className="px-4 py-3 bg-white border-b border-[#E3EAF5] flex items-center justify-between">
+          <div className="px-4 py-3 bg-[#151520] border-b border-[#232334] flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-[#F1EDFF] border border-[#DDD6FE] flex items-center justify-center text-[#5B21B6]">
+              <div className="w-7 h-7 rounded-lg bg-purple-950/60 border border-purple-500/40 flex items-center justify-center text-purple-300">
                 <Sparkles className="w-3.5 h-3.5" />
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <h3 className="font-bold text-xs sm:text-sm text-[#142748]">PlacePrep AI</h3>
-                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-[#F1EDFF] text-[#5B21B6] border border-[#DDD6FE]">
+                  <h3 className="font-bold text-xs sm:text-sm text-white">PlacePrep AI</h3>
+                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-purple-950/60 text-purple-300 border border-purple-500/40">
                     Local Engine
                   </span>
                 </div>
-                <p className="text-[10px] text-[#8896AB] truncate max-w-[210px]">
+                <p className="text-[10px] text-zinc-400 truncate max-w-[210px]">
                   Placement Intelligence Assistant
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-1 text-[#52627A]">
+            <div className="flex items-center gap-1 text-zinc-400">
               <button
                 onClick={handleResetChat}
-                className="p-1.5 rounded-lg hover:bg-[#F7F9FC] hover:text-[#142748] transition-colors"
+                className="p-1.5 rounded-lg hover:bg-[#1F1F2E] hover:text-white transition-colors"
                 title="Reset conversation"
                 aria-label="Reset conversation"
               >
@@ -208,7 +208,7 @@ export function PlacePrepAIAssistant() {
               </button>
               <button
                 onClick={() => setIsExpanded(prev => !prev)}
-                className="hidden sm:block p-1.5 rounded-lg hover:bg-[#F7F9FC] hover:text-[#142748] transition-colors"
+                className="hidden sm:block p-1.5 rounded-lg hover:bg-[#1F1F2E] hover:text-white transition-colors"
                 title={isExpanded ? 'Collapse' : 'Expand'}
                 aria-label="Toggle full view"
               >
@@ -216,7 +216,7 @@ export function PlacePrepAIAssistant() {
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-[#F7F9FC] hover:text-[#142748] transition-colors"
+                className="p-1.5 rounded-lg hover:bg-[#1F1F2E] hover:text-white transition-colors"
                 title="Close Assistant"
                 aria-label="Close Assistant"
               >
@@ -226,15 +226,15 @@ export function PlacePrepAIAssistant() {
           </div>
 
           {/* Assistant Transparency Disclaimer Notice */}
-          <div className="px-3.5 py-1.5 bg-[#F7F9FC] border-b border-[#E3EAF5] flex items-center gap-2 text-[11px] text-[#52627A]">
-            <Info className="w-3.5 h-3.5 text-[#315BFA] shrink-0" />
+          <div className="px-3.5 py-1.5 bg-[#14141E] border-b border-[#232334] flex items-center gap-2 text-[11px] text-zinc-400">
+            <Info className="w-3.5 h-3.5 text-purple-400 shrink-0" />
             <span className="truncate">
               Grounded in your real profile and college benchmarks. 100% offline.
             </span>
           </div>
 
           {/* Conversation History */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-[#F7F9FC]/50">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-[#0A0A10]">
             {messages.map((msg) => {
               const isUser = msg.sender === 'user';
               return (
@@ -243,7 +243,7 @@ export function PlacePrepAIAssistant() {
                   className={`flex gap-2.5 ${isUser ? 'justify-end' : 'justify-start'}`}
                 >
                   {!isUser && (
-                    <div className="w-6 h-6 rounded-lg bg-[#F1EDFF] border border-[#DDD6FE] text-[#5B21B6] flex items-center justify-center shrink-0 text-xs shadow-2xs mt-0.5">
+                    <div className="w-6 h-6 rounded-lg bg-purple-950/60 border border-purple-500/40 text-purple-300 flex items-center justify-center shrink-0 text-xs shadow-xs mt-0.5">
                       <Bot className="w-3.5 h-3.5" />
                     </div>
                   )}
@@ -252,19 +252,19 @@ export function PlacePrepAIAssistant() {
                     <div
                       className={`p-3 rounded-xl text-xs sm:text-sm leading-relaxed ${
                         isUser
-                          ? 'bg-[#315BFA] text-white rounded-tr-xs shadow-xs'
-                          : 'bg-white text-[#142748] border border-[#E3EAF5] rounded-tl-xs shadow-subtle'
+                          ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-tr-xs shadow-[0_2px_12px_rgba(124,58,237,0.35)]'
+                          : 'bg-[#161622] text-zinc-100 border border-[#26263A] rounded-tl-xs shadow-sm'
                       }`}
                     >
                       <div className="whitespace-pre-line">{msg.text}</div>
 
                       {/* Context highlights */}
                       {msg.contextHighlights && msg.contextHighlights.length > 0 && (
-                        <div className="mt-2 pt-2 border-t border-[#E3EAF5] flex flex-wrap gap-1.5">
+                        <div className="mt-2 pt-2 border-t border-[#26263A] flex flex-wrap gap-1.5">
                           {msg.contextHighlights.map((hl, i) => (
                             <span
                               key={i}
-                              className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-[#F7F9FC] text-[#52627A] border border-[#E3EAF5]"
+                              className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-[#1C1C2A] text-purple-300 border border-purple-500/25"
                             >
                               {hl}
                             </span>
@@ -278,7 +278,7 @@ export function PlacePrepAIAssistant() {
                       <Link
                         href={msg.suggestedAction.href}
                         onClick={() => setIsOpen(false)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1 bg-white hover:bg-[#F7F9FC] border border-[#E3EAF5] rounded-lg text-xs font-semibold text-[#315BFA] transition-colors shadow-2xs"
+                        className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#181826] hover:bg-purple-950/50 border border-purple-500/40 rounded-lg text-xs font-semibold text-purple-300 transition-colors shadow-xs"
                       >
                         <span>{msg.suggestedAction.label}</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -286,7 +286,7 @@ export function PlacePrepAIAssistant() {
                     )}
 
                     <div
-                      className={`text-[10px] text-[#8896AB] px-1 ${
+                      className={`text-[10px] text-zinc-500 px-1 ${
                         isUser ? 'text-right' : 'text-left'
                       }`}
                     >
@@ -295,7 +295,7 @@ export function PlacePrepAIAssistant() {
                   </div>
 
                   {isUser && (
-                    <div className="w-6 h-6 rounded-lg bg-[#142748] text-white flex items-center justify-center shrink-0 text-xs shadow-2xs mt-0.5">
+                    <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-purple-700 to-indigo-800 text-white flex items-center justify-center shrink-0 text-xs shadow-xs mt-0.5">
                       <User className="w-3.5 h-3.5" />
                     </div>
                   )}
@@ -305,14 +305,14 @@ export function PlacePrepAIAssistant() {
 
             {/* Typing Indicator */}
             {isTyping && (
-              <div className="flex gap-2.5 items-center text-[#8896AB] text-xs py-1">
-                <div className="w-6 h-6 rounded-lg bg-[#F1EDFF] border border-[#DDD6FE] text-[#5B21B6] flex items-center justify-center text-xs">
+              <div className="flex gap-2.5 items-center text-zinc-500 text-xs py-1">
+                <div className="w-6 h-6 rounded-lg bg-purple-950/60 border border-purple-500/40 text-purple-300 flex items-center justify-center text-xs">
                   <Bot className="w-3.5 h-3.5" />
                 </div>
-                <div className="bg-white px-3 py-2 rounded-xl rounded-tl-xs border border-[#E3EAF5] flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 bg-[#315BFA] rounded-full ai-dot-1" />
-                  <span className="w-1.5 h-1.5 bg-[#315BFA] rounded-full ai-dot-2" />
-                  <span className="w-1.5 h-1.5 bg-[#315BFA] rounded-full ai-dot-3" />
+                <div className="bg-[#161622] px-3 py-2 rounded-xl rounded-tl-xs border border-[#26263A] flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 bg-purple-400 rounded-full ai-dot-1" />
+                  <span className="w-1.5 h-1.5 bg-purple-400 rounded-full ai-dot-2" />
+                  <span className="w-1.5 h-1.5 bg-purple-400 rounded-full ai-dot-3" />
                 </div>
               </div>
             )}
@@ -321,12 +321,12 @@ export function PlacePrepAIAssistant() {
           </div>
 
           {/* Quick Suggested Prompt Pills */}
-          <div className="px-3 py-2 bg-white border-t border-[#E3EAF5] overflow-x-auto flex gap-1.5 no-scrollbar">
+          <div className="px-3 py-2 bg-[#14141E] border-t border-[#232334] overflow-x-auto flex gap-1.5 no-scrollbar">
             {SUGGESTED_QUERIES.map((sq, i) => (
               <button
                 key={i}
                 onClick={() => handleSend(sq)}
-                className="text-[11px] font-medium whitespace-nowrap px-2.5 py-1 rounded-full bg-[#F7F9FC] hover:bg-[#EEF2FF] hover:text-[#315BFA] hover:border-[#D0DBFE] border border-[#E3EAF5] text-[#52627A] transition-colors shrink-0"
+                className="text-[11px] font-medium whitespace-nowrap px-2.5 py-1 rounded-full bg-[#181824] hover:bg-purple-950/50 hover:text-purple-300 hover:border-purple-500/40 border border-[#232334] text-zinc-300 transition-colors shrink-0"
               >
                 {sq}
               </button>
@@ -334,7 +334,7 @@ export function PlacePrepAIAssistant() {
           </div>
 
           {/* Input Box */}
-          <div className="p-3 bg-white border-t border-[#E3EAF5] flex items-end gap-2">
+          <div className="p-3 bg-[#14141E] border-t border-[#232334] flex items-end gap-2">
             <textarea
               ref={inputRef}
               rows={1}
@@ -342,12 +342,12 @@ export function PlacePrepAIAssistant() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask about study plan, weak topics, or companies... (Enter to send)"
-              className="flex-1 resize-none max-h-24 p-2.5 bg-[#F7F9FC] border border-[#E3EAF5] rounded-xl text-xs sm:text-sm text-[#142748] placeholder-[#8896AB] focus:outline-none focus:border-[#315BFA] focus:bg-white transition-all"
+              className="flex-1 resize-none max-h-24 p-2.5 bg-[#0D0D14] border border-[#232334] rounded-xl text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/40 transition-all"
             />
             <button
               onClick={() => handleSend()}
               disabled={!input.trim() || isTyping}
-              className="p-2.5 bg-[#315BFA] hover:bg-[#2548DE] disabled:bg-[#E3EAF5] text-white disabled:text-[#8896AB] rounded-xl shadow-xs transition-colors shrink-0"
+              className="p-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 disabled:opacity-40 text-white rounded-xl shadow-[0_0_15px_rgba(124,58,237,0.4)] transition-all shrink-0"
               aria-label="Send message"
             >
               <Send className="w-4 h-4" />

@@ -9,8 +9,7 @@ import {
   CollegePlacementData,
   RecruiterHistoryRecord,
   DailyWeeklyRoadmapTask,
-  StudentTopicPerformance,
-  SkillGapItem
+  StudentTopicPerformance
 } from '@/types';
 import {
   initialStudent,
@@ -22,7 +21,6 @@ import {
   initialPersonalizedRoadmapTasks
 } from '@/data/mockData';
 import {
-  analyzeStudentSkillGaps,
   generatePersonalizedRoadmap
 } from '@/services/roadmapEngine';
 
@@ -76,7 +74,7 @@ export function PlacePrepProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
   const [isOnline, setIsOnline] = useState<boolean>(true);
-  const [themeMode, setThemeMode] = useState<'light' | 'dark'>('light');
+  const [themeMode, setThemeMode] = useState<'light' | 'dark'>('dark');
 
   // Monitor network online/offline status
   useEffect(() => {
@@ -128,10 +126,12 @@ export function PlacePrepProvider({ children }: { children: React.ReactNode }) {
       if (savedCollegeData) setCollegeData(JSON.parse(savedCollegeData));
       if (savedRoadmap) setRoadmapTasks(JSON.parse(savedRoadmap));
       if (savedTopics) setTopicPerformances(JSON.parse(savedTopics));
-      if (savedTheme === 'dark' || savedTheme === 'light') {
-        setThemeMode(savedTheme);
-        if (savedTheme === 'dark') document.documentElement.classList.add('dark');
-        else document.documentElement.classList.remove('dark');
+      if (savedTheme === 'light') {
+        setThemeMode('light');
+        document.documentElement.classList.remove('dark');
+      } else {
+        setThemeMode('dark');
+        document.documentElement.classList.add('dark');
       }
       if (loggedIn !== null) setIsLoggedIn(loggedIn === 'true');
     } catch {
@@ -385,14 +385,14 @@ export function PlacePrepProvider({ children }: { children: React.ReactNode }) {
         {toasts.map(toast => (
           <div
             key={toast.id}
-            className={`pointer-events-auto px-4 py-3 rounded-xl shadow-premium border text-sm font-medium flex items-center gap-3 transition-all ${
+            className={`pointer-events-auto px-4 py-3 rounded-xl shadow-[0_4px_25px_rgba(0,0,0,0.6)] border text-sm font-medium flex items-center gap-3 transition-all backdrop-blur-md ${
               toast.type === 'success'
-                ? 'bg-emerald-50 text-emerald-900 border-emerald-200'
+                ? 'bg-[#13131C] text-emerald-300 border-emerald-500/40 shadow-emerald-950/20'
                 : toast.type === 'error'
-                ? 'bg-rose-50 text-rose-900 border-rose-200'
+                ? 'bg-[#13131C] text-rose-300 border-rose-500/40 shadow-rose-950/20'
                 : toast.type === 'warning'
-                ? 'bg-amber-50 text-amber-900 border-amber-200'
-                : 'bg-slate-900 text-white border-slate-800'
+                ? 'bg-[#13131C] text-amber-300 border-amber-500/40 shadow-amber-950/20'
+                : 'bg-[#13131C] text-purple-200 border-purple-500/40 shadow-purple-950/30'
             }`}
           >
             <span>{toast.message}</span>

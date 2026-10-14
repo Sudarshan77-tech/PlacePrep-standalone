@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePlacePrep } from '@/context/PlacePrepContext';
 import { generatePlacePrepAIResponse, AssistantContext } from '@/services/localAiService';
 import { AIChatMessage, GeneratedStudyPlan, PlanTaskItem } from '@/types';
+import { AIMarkdownRenderer } from './AIMarkdownRenderer';
 import {
   Sparkles,
   X,
@@ -603,10 +604,14 @@ export function PlacePrepAIAssistant() {
                       className={`p-3 rounded-xl text-xs sm:text-sm leading-relaxed ${
                         isUser
                           ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-tr-xs shadow-[0_2px_12px_rgba(124,58,237,0.35)]'
-                          : 'bg-[#161622] text-zinc-100 border border-[#26263A] rounded-tl-xs shadow-sm'
+                          : 'bg-[#161622] text-[#D4D4E4] border border-[#26263A] rounded-tl-xs shadow-sm'
                       }`}
                     >
-                      <div className="whitespace-pre-line">{msg.text}</div>
+                      {isUser ? (
+                        <div className="whitespace-pre-wrap break-words text-white">{msg.text}</div>
+                      ) : (
+                        <AIMarkdownRenderer content={msg.text} />
+                      )}
 
                       {/* Interactive Study Plan Card */}
                       {msg.plan && (

@@ -366,6 +366,50 @@ export interface StudentTopicPerformance {
   status: 'Strength' | 'Moderate' | 'Weakness';
 }
 
+export type PlanTaskCategory = 'Coding' | 'Aptitude' | 'Technical' | 'Interview' | 'Revision' | 'Break';
+
+export interface PlanTaskItem {
+  id: string;
+  timeSlot?: string;
+  durationMinutes: number;
+  title: string;
+  category: PlanTaskCategory;
+  description: string;
+  targetGoal: string;
+  completed: boolean;
+  completedAt?: string;
+  moduleHref?: string;
+}
+
+export interface DaySchedule {
+  dayNumber: number;
+  dayName: string;
+  focusTheme: string;
+  tasks: PlanTaskItem[];
+}
+
+export interface WeekSchedule {
+  weekNumber: number;
+  weekTheme: string;
+  milestone: string;
+  days: DaySchedule[];
+}
+
+export interface GeneratedStudyPlan {
+  id: string;
+  type: 'today' | 'weekly' | 'monthly';
+  title: string;
+  createdAt: string;
+  totalDurationMinutes?: number;
+  assumptions: string[];
+  targetCompanies: string[];
+  weakTopicsAddressed: string[];
+  tasks?: PlanTaskItem[];
+  days?: DaySchedule[];
+  weeks?: WeekSchedule[];
+  summaryNote?: string;
+}
+
 export interface AIChatMessage {
   id: string;
   sender: 'user' | 'assistant';
@@ -377,6 +421,7 @@ export interface AIChatMessage {
     href: string;
   };
   contextHighlights?: string[];
+  plan?: GeneratedStudyPlan;
 }
 
 export interface StudentGoal {

@@ -9,7 +9,10 @@ import {
   CollegePlacementData,
   RecruiterHistoryRecord,
   DailyWeeklyRoadmapTask,
-  StudentTopicPerformance
+  StudentTopicPerformance,
+  GeneratedStudyPlan,
+  AIChatMessage,
+  PlanTaskItem
 } from '@/types';
 import {
   initialStudent,
@@ -54,6 +57,19 @@ interface PlacePrepContextType {
   addOrUpdateRecruiterRecord: (record: RecruiterHistoryRecord) => void;
   deleteRecruiterRecord: (id: string) => void;
   updateCollegeOverview: (overview: Partial<CollegePlacementData>) => void;
+  // Study plans & AI Assistant chat persistence
+  activePlans: {
+    today?: GeneratedStudyPlan;
+    weekly?: GeneratedStudyPlan;
+    monthly?: GeneratedStudyPlan;
+  };
+  saveStudyPlan: (plan: GeneratedStudyPlan) => void;
+  togglePlanTask: (planId: string, taskId: string) => void;
+  clearActivePlan: (type: 'today' | 'weekly' | 'monthly') => void;
+  chatMessages: AIChatMessage[];
+  addChatMessage: (msg: AIChatMessage) => void;
+  updateChatMessagePlan: (messageId: string, updatedPlan: GeneratedStudyPlan) => void;
+  resetChatHistory: () => void;
   isLoggedIn: boolean;
   themeMode: 'light' | 'dark';
   toggleTheme: () => void;
@@ -71,6 +87,24 @@ export function PlacePrepProvider({ children }: { children: React.ReactNode }) {
   const [collegeData, setCollegeData] = useState<CollegePlacementData>(defaultCollegePlacementData);
   const [roadmapTasks, setRoadmapTasks] = useState<DailyWeeklyRoadmapTask[]>(initialPersonalizedRoadmapTasks);
   const [topicPerformances, setTopicPerformances] = useState<StudentTopicPerformance[]>(sampleTopicPerformances);
+  const [activePlans, setActivePlans] = useState<{
+    today?: GeneratedStudyPlan;
+    weekly?: GeneratedStudyPlan;
+    monthly?: GeneratedStudyPlan;
+  }>({});
+  const [chatMessages, setChatMessages] = useState<AIChatMessage[]>([
+    {
+      id: 'msg_welcome',
+      sender: 'assistant',
+      text: `Hello **${initialStudent.name}**! 👋 I am your **PlacePrep AI Assistant**.\n\nI can create personalized study plans (for today, this week, or 30 days), explain any CS or placement topic, test your readiness for target companies, and help you improve your weak areas.\n\nWhat would you like to prepare right now?`,
+      timestamp: 'Just now',
+      isRuleBased: true,
+      suggestedAction: {
+        label: "View Today's Roadmap",
+        href: '/learning-path'
+      }
+    }
+  ]);
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
   const [isOnline, setIsOnline] = useState<boolean>(true);
@@ -118,6 +152,8 @@ export function PlacePrepProvider({ children }: { children: React.ReactNode }) {
       const savedTopics = localStorage.getItem('placeprep_topics');
       const savedTheme = localStorage.getItem('placeprep_theme');
       const loggedIn = localStorage.getItem('placeprep_auth');
+      const savedPlans = localStorage.getItem('placeprep_active_plans');
+      const savedChat = localStorage.getItem('placeprep_ai_chat_history');
 
       if (savedUser) setUser(JSON.parse(savedUser));
       if (savedStats) setStats(JSON.parse(savedStats));
@@ -126,6 +162,8 @@ export function PlacePrepProvider({ children }: { children: React.ReactNode }) {
       if (savedCollegeData) setCollegeData(JSON.parse(savedCollegeData));
       if (savedRoadmap) setRoadmapTasks(JSON.parse(savedRoadmap));
       if (savedTopics) setTopicPerformances(JSON.parse(savedTopics));
+      if (savedPlans) setActivePlans(JSON.parse(savedPlans));
+      if (savedChat) setChatMessages(JSON.parse(savedChat));
       if (savedTheme === 'light') {
         setThemeMode('light');
         document.documentElement.classList.remove('dark');
@@ -312,6 +350,199 @@ export function PlacePrepProvider({ children }: { children: React.ReactNode }) {
     showToast('College details updated', 'success');
   };
 
+  // Study Plan Management & Task Checkbox State Toggling
+  const saveStudyPlan = (newPlan: GeneratedStudyPlan) => {
+    setActivePlans(prev => {
+      const existing = prev[newPlan.type];
+      // Preserve completed tasks when revising a plan
+      if (existing) {
+        const completedTitles = new Set<string>();
+        const collect = (tasks?: PlanTaskItem[]) => {
+          tasks?.forEach(t => {
+            if (t.completed) completedTitles.add(t.title.toLowerCase().trim());
+          });
+        };
+        collect(existing.tasks);
+        existing.days?.forEach(d => collect(d.tasks));
+        existing.weeks?.forEach(w => w.days.forEach(d => collect(d.tasks)));
+
+        const markCompleted = (tasks?: PlanTaskItem[]) => {
+          tasks?.forEach(t => {
+            if (completedTitles.has(t.title.toLowerCase().trim())) {
+              t.completed = true;
+            }
+          });
+        };
+        markCompleted(newPlan.tasks);
+        newPlan.days?.forEach(d => markCompleted(d.tasks));
+        newPlan.weeks?.forEach(w => w.days.forEach(d => markCompleted(d.tasks)));
+      }
+
+      const next = { ...prev, [newPlan.type]: newPlan };
+      try {
+        localStorage.setItem('placeprep_active_plans', JSON.stringify(next));
+      } catch {
+        // ignore storage errors
+      }
+      return next;
+    });
+    showToast(`Saved ${newPlan.title} to active plans!`, 'success');
+  };
+
+  const togglePlanTask = (planId: string, taskId: string) => {
+    let toggledTitle = '';
+    let isNowCompleted = false;
+
+    setActivePlans(prev => {
+      const next = { ...prev };
+
+      const updateTasks = (tasks?: PlanTaskItem[]) => {
+        if (!tasks) return tasks;
+        return tasks.map(t => {
+          if (t.id === taskId) {
+            isNowCompleted = !t.completed;
+            toggledTitle = t.title;
+            return {
+              ...t,
+              completed: isNowCompleted,
+              completedAt: isNowCompleted ? new Date().toISOString() : undefined
+            };
+          }
+          return t;
+        });
+      };
+
+      for (const key of ['today', 'weekly', 'monthly'] as const) {
+        const p = next[key];
+        if (p && p.id === planId) {
+          if (p.tasks) p.tasks = updateTasks(p.tasks);
+          if (p.days) {
+            p.days = p.days.map(d => ({ ...d, tasks: updateTasks(d.tasks) || [] }));
+          }
+          if (p.weeks) {
+            p.weeks = p.weeks.map(w => ({
+              ...w,
+              days: w.days.map(d => ({ ...d, tasks: updateTasks(d.tasks) || [] }))
+            }));
+          }
+        }
+      }
+
+      try {
+        localStorage.setItem('placeprep_active_plans', JSON.stringify(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+
+    // Also update any chat messages that contain this plan
+    setChatMessages(prev => {
+      const updateTasks = (tasks?: PlanTaskItem[]) => {
+        if (!tasks) return tasks;
+        return tasks.map(t => {
+          if (t.id === taskId) {
+            return {
+              ...t,
+              completed: !t.completed,
+              completedAt: !t.completed ? new Date().toISOString() : undefined
+            };
+          }
+          return t;
+        });
+      };
+
+      const updated = prev.map(m => {
+        if (m.plan && m.plan.id === planId) {
+          const p = { ...m.plan };
+          if (p.tasks) p.tasks = updateTasks(p.tasks);
+          if (p.days) {
+            p.days = p.days.map(d => ({ ...d, tasks: updateTasks(d.tasks) || [] }));
+          }
+          if (p.weeks) {
+            p.weeks = p.weeks.map(w => ({
+              ...w,
+              days: w.days.map(d => ({ ...d, tasks: updateTasks(d.tasks) || [] }))
+            }));
+          }
+          return { ...m, plan: p };
+        }
+        return m;
+      });
+
+      try {
+        localStorage.setItem('placeprep_ai_chat_history', JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
+      return updated;
+    });
+
+    if (toggledTitle) {
+      showToast(isNowCompleted ? `✓ Task completed: ${toggledTitle}` : `Task marked pending: ${toggledTitle}`, 'info');
+    }
+  };
+
+  const clearActivePlan = (type: 'today' | 'weekly' | 'monthly') => {
+    setActivePlans(prev => {
+      const next = { ...prev };
+      delete next[type];
+      try {
+        localStorage.setItem('placeprep_active_plans', JSON.stringify(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+    showToast(`Active ${type} plan cleared`, 'info');
+  };
+
+  const addChatMessage = (msg: AIChatMessage) => {
+    setChatMessages(prev => {
+      const next = [...prev, msg];
+      try {
+        localStorage.setItem('placeprep_ai_chat_history', JSON.stringify(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+  };
+
+  const updateChatMessagePlan = (messageId: string, updatedPlan: GeneratedStudyPlan) => {
+    setChatMessages(prev => {
+      const next = prev.map(m => m.id === messageId ? { ...m, plan: updatedPlan } : m);
+      try {
+        localStorage.setItem('placeprep_ai_chat_history', JSON.stringify(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+    saveStudyPlan(updatedPlan);
+  };
+
+  const resetChatHistory = () => {
+    const welcome: AIChatMessage = {
+      id: `msg_welcome_${Date.now()}`,
+      sender: 'assistant',
+      text: `Hello **${user.name}**! 👋 I am your **PlacePrep AI Assistant**.\n\nI can create personalized study plans (for today, this week, or 30 days), explain any CS or placement topic, test your readiness for target companies, and help you improve your weak areas.\n\nWhat would you like to prepare right now?`,
+      timestamp: 'Just now',
+      isRuleBased: true,
+      suggestedAction: {
+        label: "View Today's Roadmap",
+        href: '/learning-path'
+      }
+    };
+    setChatMessages([welcome]);
+    try {
+      localStorage.removeItem('placeprep_ai_chat_history');
+    } catch {
+      // ignore
+    }
+    showToast('Conversation reset', 'info');
+  };
+
   const resetDemoData = () => {
     try {
       localStorage.removeItem('placeprep_user');
@@ -322,6 +553,8 @@ export function PlacePrepProvider({ children }: { children: React.ReactNode }) {
       localStorage.removeItem('placeprep_roadmap');
       localStorage.removeItem('placeprep_topics');
       localStorage.removeItem('placeprep_auth');
+      localStorage.removeItem('placeprep_active_plans');
+      localStorage.removeItem('placeprep_ai_chat_history');
     } catch {
       // ignore
     }
@@ -332,6 +565,20 @@ export function PlacePrepProvider({ children }: { children: React.ReactNode }) {
     setCollegeData(defaultCollegePlacementData);
     setRoadmapTasks(initialPersonalizedRoadmapTasks);
     setTopicPerformances(sampleTopicPerformances);
+    setActivePlans({});
+    setChatMessages([
+      {
+        id: 'msg_welcome',
+        sender: 'assistant',
+        text: `Hello **${initialStudent.name}**! 👋 I am your **PlacePrep AI Assistant**.\n\nI can create personalized study plans (for today, this week, or 30 days), explain any CS or placement topic, test your readiness for target companies, and help you improve your weak areas.\n\nWhat would you like to prepare right now?`,
+        timestamp: 'Just now',
+        isRuleBased: true,
+        suggestedAction: {
+          label: "View Today's Roadmap",
+          href: '/learning-path'
+        }
+      }
+    ]);
     setIsLoggedIn(true);
     showToast('Demo data reset to default factory state!', 'success');
   };
@@ -372,6 +619,14 @@ export function PlacePrepProvider({ children }: { children: React.ReactNode }) {
         addOrUpdateRecruiterRecord,
         deleteRecruiterRecord,
         updateCollegeOverview,
+        activePlans,
+        saveStudyPlan,
+        togglePlanTask,
+        clearActivePlan,
+        chatMessages,
+        addChatMessage,
+        updateChatMessagePlan,
+        resetChatHistory,
         isLoggedIn,
         themeMode,
         toggleTheme,

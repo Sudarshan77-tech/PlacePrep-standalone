@@ -1,0 +1,423 @@
+'use client';
+
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { usePlacePrep } from '@/context/PlacePrepContext';
+import {
+  User,
+  GraduationCap,
+  Building,
+  Mail,
+  Award,
+  Sparkles,
+  Edit3,
+  Check,
+  Flame,
+  CheckCircle2,
+  BookOpen,
+  Target,
+  Clock,
+  Calendar,
+  Briefcase,
+  AlertTriangle
+} from 'lucide-react';
+import { sampleCompanies } from '@/data/mockData';
+
+export default function ProfilePage() {
+  const { user, stats, updateUser, showToast } = usePlacePrep();
+  const [isEditing, setIsEditing] = useState(false);
+
+  const [formData, setFormData] = useState({
+    name: user.name,
+    email: user.email,
+    college: user.college,
+    branch: user.branch,
+    gradYear: user.gradYear,
+    currentSkillLevel: user.currentSkillLevel,
+    cgpa: user.cgpa ?? 8.82,
+    activeBacklogs: user.activeBacklogs ?? 0,
+    preferredJobRoles: user.preferredJobRoles || ['Software Development Engineer', 'Full Stack Developer'],
+    targetCompanyIds: user.targetCompanyIds || ['amazon', 'tcs', 'infosys'],
+    dailyPrepMinutes: user.dailyPrepMinutes || 120,
+    placementTargetDate: user.placementTargetDate || '2026-11-15'
+  });
+
+  const [newRoleInput, setNewRoleInput] = useState('');
+
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateUser(formData);
+    setIsEditing(false);
+    showToast('Profile, academic eligibility, and target companies updated!', 'success');
+  };
+
+  const handleToggleTargetCompany = (cid: string) => {
+    const current = formData.targetCompanyIds;
+    if (current.includes(cid)) {
+      setFormData({ ...formData, targetCompanyIds: current.filter(id => id !== cid) });
+    } else {
+      setFormData({ ...formData, targetCompanyIds: [...current, cid] });
+    }
+  };
+
+  const handleAddRole = () => {
+    if (!newRoleInput.trim()) return;
+    if (!formData.preferredJobRoles.includes(newRoleInput.trim())) {
+      setFormData({
+        ...formData,
+        preferredJobRoles: [...formData.preferredJobRoles, newRoleInput.trim()]
+      });
+      setNewRoleInput('');
+    }
+  };
+
+  const handleRemoveRole = (role: string) => {
+    setFormData({
+      ...formData,
+      preferredJobRoles: formData.preferredJobRoles.filter(r => r !== role)
+    });
+  };
+
+  const skillsList = ['Data Structures', 'Algorithms', 'C++', 'Python', 'React', 'Next.js', 'DBMS', 'Operating Systems', 'System Design'];
+
+  const achievementsList = [
+    { title: '7-Day Preparation Streak', desc: 'Maintained consistent daily preparation for 7 consecutive days' },
+    { title: 'Top 10% in TCS NQT Mock', desc: 'Scored 84% on full cognitive and advanced coding mock drive' },
+    { title: 'Algorithmic Problem Solver', desc: 'Solved 80+ campus placement coding challenges' }
+  ];
+
+  return (
+    <DashboardLayout>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-[#EBF0FF] text-[#315BFA] border border-[#D4E0FC]">
+                Student Profile & Placement Targets
+              </span>
+              <span className="text-xs text-[#52627A]">Campus Verification</span>
+            </div>
+            <h1 className="text-2xl font-bold text-[#142748] mt-1.5">
+              Academic Credentials & Target Preferences
+            </h1>
+            <p className="text-sm text-[#52627A] mt-1">
+              Your college profile, academic eligibility credentials, preferred job roles, and target companies power your personalized roadmap.
+            </p>
+          </div>
+
+          <button
+            onClick={() => setIsEditing(!isEditing)}
+            className="px-4 py-2 border border-[#E3EAF5] hover:bg-[#F7F9FC] text-[#52627A] hover:text-[#142748] text-xs sm:text-sm font-semibold rounded-xl flex items-center gap-2 transition-colors shadow-[0_1px_3px_rgba(20,39,72,0.03)]"
+          >
+            <Edit3 className="w-4 h-4" />
+            <span>{isEditing ? 'Cancel Editing' : 'Edit Profile & Targets'}</span>
+          </button>
+        </div>
+
+        {/* PROFILE HERO CARD */}
+        <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#E3EAF5] shadow-[0_1px_3px_rgba(20,39,72,0.03)] flex flex-col md:flex-row items-center sm:items-start gap-6">
+          <div className="w-20 h-20 rounded-2xl bg-[#315BFA] text-white font-extrabold text-2xl flex items-center justify-center shadow-xs shrink-0">
+            {user.name.charAt(0)}
+          </div>
+
+          <div className="flex-1 text-center sm:text-left space-y-1.5">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 justify-center sm:justify-start">
+              <h2 className="text-2xl font-bold text-[#142748]">{user.name}</h2>
+              <span className="px-2.5 py-0.5 rounded text-xs font-semibold bg-[#EBF0FF] text-[#315BFA] border border-[#D4E0FC] inline-block">
+                Level: {user.currentSkillLevel}
+              </span>
+            </div>
+
+            <p className="text-xs sm:text-sm text-[#52627A] flex items-center gap-1.5 justify-center sm:justify-start">
+              <Building className="w-4 h-4 text-[#52627A]" />
+              <span>{user.college}</span>
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 text-xs text-[#52627A] pt-1">
+              <span className="flex items-center gap-1">
+                <GraduationCap className="w-4 h-4 text-[#52627A]" />
+                {user.branch} • Class of {user.gradYear}
+              </span>
+              <span>•</span>
+              <span className="font-semibold text-[#142748]">CGPA: {user.cgpa || 8.82}</span>
+              <span>•</span>
+              <span className="font-semibold text-emerald-700">{user.activeBacklogs || 0} Backlogs</span>
+            </div>
+          </div>
+
+          {/* Readiness Index Metric Badge */}
+          <div className="bg-[#F7F9FC] p-4 rounded-xl border border-[#E3EAF5] text-center shrink-0 w-full sm:w-auto">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#52627A]">Readiness Score</span>
+            <p className="text-3xl font-extrabold text-[#315BFA] mt-0.5">{stats.readinessScore}%</p>
+            <span className="text-xs font-semibold text-emerald-700">Tier-1 Eligible</span>
+          </div>
+        </div>
+
+        {/* EDIT FORM (Conditionally Rendered) */}
+        {isEditing && (
+          <form onSubmit={handleSave} className="bg-white rounded-2xl p-6 sm:p-7 border border-[#315BFA]/30 shadow-md space-y-5">
+            <h3 className="text-base font-bold text-[#142748]">Update Profile, Academic & Placement Parameters</h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div>
+                <label className="text-[#142748] font-semibold mb-1 block">Full Name</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full p-2.5 bg-[#F7F9FC] border border-[#E3EAF5] rounded-lg text-[#142748] focus:outline-none focus:border-[#315BFA]"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-[#142748] font-semibold mb-1 block">College Email</label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full p-2.5 bg-[#F7F9FC] border border-[#E3EAF5] rounded-lg text-[#142748] focus:outline-none focus:border-[#315BFA]"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-[#142748] font-semibold mb-1 block">College / University</label>
+                <input
+                  type="text"
+                  value={formData.college}
+                  onChange={(e) => setFormData({ ...formData, college: e.target.value })}
+                  className="w-full p-2.5 bg-[#F7F9FC] border border-[#E3EAF5] rounded-lg text-[#142748] focus:outline-none focus:border-[#315BFA]"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-[#142748] font-semibold mb-1 block">Branch / Department</label>
+                <input
+                  type="text"
+                  value={formData.branch}
+                  onChange={(e) => setFormData({ ...formData, branch: e.target.value })}
+                  className="w-full p-2.5 bg-[#F7F9FC] border border-[#E3EAF5] rounded-lg text-[#142748] focus:outline-none focus:border-[#315BFA]"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-[#142748] font-semibold mb-1 block">Current CGPA (Out of 10.0)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={formData.cgpa}
+                  onChange={(e) => setFormData({ ...formData, cgpa: Number(e.target.value) })}
+                  className="w-full p-2.5 bg-[#F7F9FC] border border-[#E3EAF5] rounded-lg text-[#142748] focus:outline-none focus:border-[#315BFA]"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-[#142748] font-semibold mb-1 block">Active Backlogs</label>
+                <input
+                  type="number"
+                  value={formData.activeBacklogs}
+                  onChange={(e) => setFormData({ ...formData, activeBacklogs: Number(e.target.value) })}
+                  className="w-full p-2.5 bg-[#F7F9FC] border border-[#E3EAF5] rounded-lg text-[#142748] focus:outline-none focus:border-[#315BFA]"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-[#142748] font-semibold mb-1 block">Daily Prep Commitment (Minutes)</label>
+                <select
+                  value={formData.dailyPrepMinutes}
+                  onChange={(e) => setFormData({ ...formData, dailyPrepMinutes: Number(e.target.value) })}
+                  className="w-full p-2.5 bg-[#F7F9FC] border border-[#E3EAF5] rounded-lg text-[#142748] focus:outline-none focus:border-[#315BFA]"
+                >
+                  <option value={60}>60 mins (1 hour)</option>
+                  <option value={90}>90 mins (1.5 hours)</option>
+                  <option value={120}>120 mins (2 hours)</option>
+                  <option value={180}>180 mins (3 hours)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-[#142748] font-semibold mb-1 block">Placement Target Date</label>
+                <input
+                  type="date"
+                  value={formData.placementTargetDate}
+                  onChange={(e) => setFormData({ ...formData, placementTargetDate: e.target.value })}
+                  className="w-full p-2.5 bg-[#F7F9FC] border border-[#E3EAF5] rounded-lg text-[#142748] focus:outline-none focus:border-[#315BFA]"
+                />
+              </div>
+            </div>
+
+            {/* Target Companies Selection */}
+            <div>
+              <label className="text-[#142748] font-semibold text-xs mb-2 block">
+                Target Companies (Select multiple to drive roadmap priorities):
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                {sampleCompanies.map((c) => {
+                  const isChecked = formData.targetCompanyIds.includes(c.id);
+                  return (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => handleToggleTargetCompany(c.id)}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold transition-colors text-left flex items-center justify-between ${
+                        isChecked
+                          ? 'bg-[#EBF0FF] border-[#315BFA] text-[#315BFA] shadow-xs'
+                          : 'bg-[#F7F9FC] border-[#E3EAF5] text-[#52627A] hover:text-[#142748]'
+                      }`}
+                    >
+                      <span>{c.name.split(' ')[0]}</span>
+                      {isChecked && <Check className="w-3.5 h-3.5 text-[#315BFA]" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Preferred Job Roles */}
+            <div>
+              <label className="text-[#142748] font-semibold text-xs mb-1 block">
+                Preferred Job Roles:
+              </label>
+              <div className="flex flex-wrap gap-1.5 mb-2">
+                {formData.preferredJobRoles.map((role) => (
+                  <span
+                    key={role}
+                    className="px-2.5 py-1 bg-[#EBF0FF] border border-[#D4E0FC] text-[#315BFA] rounded-md text-xs font-semibold flex items-center gap-1.5"
+                  >
+                    <span>{role}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveRole(role)}
+                      className="text-[#315BFA] hover:text-rose-600"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="e.g. SDE-1, Cloud Engineer, Data Analyst..."
+                  value={newRoleInput}
+                  onChange={(e) => setNewRoleInput(e.target.value)}
+                  className="flex-1 p-2.5 bg-[#F7F9FC] border border-[#E3EAF5] rounded-lg text-xs text-[#142748] focus:outline-none focus:border-[#315BFA]"
+                />
+                <button
+                  type="button"
+                  onClick={handleAddRole}
+                  className="px-4 py-2 bg-[#142748] hover:bg-[#1E3A8A] text-white rounded-lg text-xs font-semibold transition-colors"
+                >
+                  Add Role
+                </button>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-3 border-t border-[#E3EAF5]">
+              <button
+                type="button"
+                onClick={() => setIsEditing(false)}
+                className="px-4 py-2 border border-[#E3EAF5] text-[#52627A] hover:bg-[#F7F9FC] text-xs font-semibold rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-5 py-2 bg-[#315BFA] hover:bg-[#2548DE] text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 shadow-xs transition-colors"
+              >
+                <Check className="w-4 h-4" />
+                <span>Save All Profile & Placement Parameters</span>
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* ACTIVE TARGET ROLES & COMPANIES SNAPSHOT */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="bg-white rounded-2xl p-5 sm:p-6 border border-[#E3EAF5] shadow-[0_1px_3px_rgba(20,39,72,0.03)] space-y-4">
+            <h3 className="text-base font-bold text-[#142748] flex items-center gap-2">
+              <Briefcase className="w-4 h-4 text-[#315BFA]" />
+              <span>Target Companies ({user.targetCompanyIds?.length || 0})</span>
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {(user.targetCompanyIds || []).map((cid) => {
+                const comp = sampleCompanies.find(c => c.id === cid);
+                return (
+                  <span key={cid} className="px-3 py-1.5 bg-[#EBF0FF] border border-[#D4E0FC] text-[#315BFA] rounded-lg text-xs font-semibold flex items-center gap-1.5">
+                    <Building className="w-3.5 h-3.5 text-[#315BFA]" />
+                    <span>{comp ? comp.name : cid.toUpperCase()}</span>
+                  </span>
+                );
+              })}
+            </div>
+            <Link href="/companies" className="text-xs font-semibold text-[#315BFA] hover:text-[#2548DE] block pt-1">
+              View Target Company Match & Preparation Checklist →
+            </Link>
+          </div>
+
+          <div className="bg-white rounded-2xl p-5 sm:p-6 border border-[#E3EAF5] shadow-[0_1px_3px_rgba(20,39,72,0.03)] space-y-4">
+            <h3 className="text-base font-bold text-[#142748] flex items-center gap-2">
+              <Target className="w-4 h-4 text-[#315BFA]" />
+              <span>Preferred Job Roles</span>
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {(user.preferredJobRoles || ['Software Engineer']).map((role, idx) => (
+                <span key={idx} className="px-3 py-1.5 bg-[#F7F9FC] border border-[#E3EAF5] text-[#142748] rounded-lg text-xs font-semibold">
+                  {role}
+                </span>
+              ))}
+            </div>
+            <div className="text-xs text-[#52627A] pt-1">
+              Daily Prep Time: <strong className="text-[#142748]">{user.dailyPrepMinutes || 120} mins/day</strong> • Target Date: <strong className="text-[#142748]">{user.placementTargetDate || 'Nov 15, 2026'}</strong>
+            </div>
+          </div>
+        </div>
+
+        {/* VERIFIED SKILLS & CAMPUS ACHIEVEMENTS */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="bg-white rounded-2xl p-5 sm:p-6 border border-[#E3EAF5] shadow-[0_1px_3px_rgba(20,39,72,0.03)] space-y-4">
+            <h3 className="text-base font-bold text-[#142748] flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-[#315BFA]" />
+              <span>Assessed Competencies</span>
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {skillsList.map((skill, i) => (
+                <span key={i} className="px-3 py-1.5 bg-[#F7F9FC] border border-[#E3EAF5] rounded-lg text-xs font-medium text-[#142748] flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#315BFA]" />
+                  <span>{skill}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl p-5 sm:p-6 border border-[#E3EAF5] shadow-[0_1px_3px_rgba(20,39,72,0.03)] space-y-4">
+            <h3 className="text-base font-bold text-[#142748] flex items-center gap-2">
+              <Award className="w-4 h-4 text-amber-500" />
+              <span>Campus Badges & Achievements</span>
+            </h3>
+            <div className="space-y-2.5">
+              {achievementsList.map((ach, idx) => (
+                <div key={idx} className="p-3 bg-[#F7F9FC] rounded-xl border border-[#E3EAF5] flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+                    <Sparkles className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-[#142748]">{ach.title}</h4>
+                    <p className="text-[11px] text-[#52627A] mt-0.5">{ach.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </DashboardLayout>
+  );
+}

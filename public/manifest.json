@@ -1,0 +1,18 @@
+{
+  "name": "PlacePrep - Placement Preparation Platform",
+  "short_name": "PlacePrep",
+  "description": "All-in-one placement preparation platform for aptitude, coding, MCQs, mock interviews, and placement analytics",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -580,7 +580,7 @@ export function PlacePrepAIAssistant() {
           <div className="px-3.5 py-1.5 bg-[#14141E] border-b border-[#232334] flex items-center gap-2 text-[11px] text-zinc-400">
             <Info className="w-3.5 h-3.5 text-purple-400 shrink-0" />
             <span className="truncate">
-              Grounded in your profile & college benchmarks. 100% offline & persistent.
+              Grounded in your profile & college benchmarks. Local AI engine & persistent storage.
             </span>
           </div>
 

@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Prepare Smarter. Get Placed.</strong><br>
-  A unified, modern, responsive, and 100% offline-capable EdTech SaaS web application for engineering students and campus placement preparation.
+  A unified, modern, responsive EdTech SaaS web application for engineering students and campus placement preparation.
 </p>
 
 <p align="center">
@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/React-18-blue?style=flat&logo=react" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5.0-blue?style=flat&logo=typescript" alt="TypeScript" />
   <img src="https://img.shields.io/badge/TailwindCSS-3.4-38B2AC?style=flat&logo=tailwind-css" alt="Tailwind CSS" />
-  <img src="https://img.shields.io/badge/PWA-Offline%20Ready-success?style=flat" alt="PWA" />
+  <img src="https://img.shields.io/badge/PWA-Supported-success?style=flat" alt="PWA" />
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat" alt="License" />
 </p>
 
@@ -64,12 +64,12 @@ It integrates a student's academic background, college recruitment history, indi
 
 ---
 
-## 🌐 100% Offline-Capable PWA
+## 🌐 Progressive Web App (PWA)
 
-- **Progressive Web App**: Configured with `manifest.json` and a custom Service Worker (`sw.js`) that pre-caches essential routes and assets.
+- **PWA Support**: Configured with `manifest.json` and a custom Service Worker (`sw.js`) for asset caching and improved load performance.
 - **Local Persistence**: Test attempts, target companies, personalized roadmap tasks, and profile details persist in `localStorage`.
-- **Live Status Indicator**: Visual indicator in the top navbar shows real-time **"Online"** or **"Offline Mode"** status.
-- **Deterministic Local AI Engine**: Generates interview evaluations, skill gaps, and roadmap tasks on-device without requiring external cloud API keys.
+- **Live Status Indicator**: Visual indicator in the top navbar shows real-time **"Online"** or **"Offline Mode"** connectivity status.
+- **Local AI Engine**: Generates interview evaluations, skill gaps, and roadmap tasks on-device using built-in heuristics — no external cloud API keys required.
 
 ---
 

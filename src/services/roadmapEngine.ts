@@ -1,5 +1,5 @@
 // Personalized Placement Intelligence and Roadmap Engine for PlacePrep
-// Operates 100% locally with transparent, verifiable heuristics and offline persistence.
+// Operates locally with transparent, verifiable heuristics and browser persistence.
 // Incorporates student college, target companies, assessed strengths & weaknesses, and prep deadline.
 
 import {

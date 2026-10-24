@@ -96,11 +96,11 @@ export function PlacePrepProvider({ children }: { children: React.ReactNode }) {
     {
       id: 'msg_welcome',
       sender: 'assistant',
-      text: `Hello **${initialStudent.name}**! 👋 I am your **PlacePrep AI Assistant**.\n\nI can create personalized study plans (for today, this week, or 30 days), explain any CS or placement topic, test your readiness for target companies, and help you improve your weak areas.\n\nWhat would you like to prepare right now?`,
+      text: `Hello ${initialStudent.name}! I am your PlacePrep AI Assistant.\n\nI can analyze your preparation for ${initialStudent.college} placements.\n\nHere are some things you can ask me:\n• Create my study plan for today\n• Which skills should I improve first?\n• How ready am I for my target company?\n• Help me prepare for technical interviews\n• Tell me about companies that recruit from my college`,
       timestamp: 'Just now',
       isRuleBased: true,
       suggestedAction: {
-        label: "View Today's Roadmap",
+        label: "Create Today's Plan",
         href: '/learning-path'
       }
     }
@@ -163,7 +163,23 @@ export function PlacePrepProvider({ children }: { children: React.ReactNode }) {
       if (savedRoadmap) setRoadmapTasks(JSON.parse(savedRoadmap));
       if (savedTopics) setTopicPerformances(JSON.parse(savedTopics));
       if (savedPlans) setActivePlans(JSON.parse(savedPlans));
-      if (savedChat) setChatMessages(JSON.parse(savedChat));
+      if (savedChat) {
+        try {
+          const parsed: AIChatMessage[] = JSON.parse(savedChat);
+          const cleaned = parsed.map(m => {
+            if (m.id.startsWith('msg_welcome') && m.text.includes('**PlacePrep AI Assistant**')) {
+              return {
+                ...m,
+                text: `Hello ${initialStudent.name}! I am your PlacePrep AI Assistant.\n\nI can analyze your preparation for ${initialStudent.college} placements.\n\nHere are some things you can ask me:\n• Create my study plan for today\n• Which skills should I improve first?\n• How ready am I for my target company?\n• Help me prepare for technical interviews\n• Tell me about companies that recruit from my college`
+              };
+            }
+            return m;
+          });
+          setChatMessages(cleaned);
+        } catch {
+          // ignore parsing error
+        }
+      }
       if (savedTheme === 'light') {
         setThemeMode('light');
         document.documentElement.classList.remove('dark');
@@ -526,11 +542,11 @@ export function PlacePrepProvider({ children }: { children: React.ReactNode }) {
     const welcome: AIChatMessage = {
       id: `msg_welcome_${Date.now()}`,
       sender: 'assistant',
-      text: `Hello **${user.name}**! 👋 I am your **PlacePrep AI Assistant**.\n\nI can create personalized study plans (for today, this week, or 30 days), explain any CS or placement topic, test your readiness for target companies, and help you improve your weak areas.\n\nWhat would you like to prepare right now?`,
+      text: `Hello ${user.name}! I am your PlacePrep AI Assistant.\n\nI can analyze your preparation for ${user.college} placements.\n\nHere are some things you can ask me:\n• Create my study plan for today\n• Which skills should I improve first?\n• How ready am I for my target company?\n• Help me prepare for technical interviews\n• Tell me about companies that recruit from my college`,
       timestamp: 'Just now',
       isRuleBased: true,
       suggestedAction: {
-        label: "View Today's Roadmap",
+        label: "Create Today's Plan",
         href: '/learning-path'
       }
     };
@@ -570,11 +586,11 @@ export function PlacePrepProvider({ children }: { children: React.ReactNode }) {
       {
         id: 'msg_welcome',
         sender: 'assistant',
-        text: `Hello **${initialStudent.name}**! 👋 I am your **PlacePrep AI Assistant**.\n\nI can create personalized study plans (for today, this week, or 30 days), explain any CS or placement topic, test your readiness for target companies, and help you improve your weak areas.\n\nWhat would you like to prepare right now?`,
+        text: `Hello ${initialStudent.name}! I am your PlacePrep AI Assistant.\n\nI can analyze your preparation for ${initialStudent.college} placements.\n\nHere are some things you can ask me:\n• Create my study plan for today\n• Which skills should I improve first?\n• How ready am I for my target company?\n• Help me prepare for technical interviews\n• Tell me about companies that recruit from my college`,
         timestamp: 'Just now',
         isRuleBased: true,
         suggestedAction: {
-          label: "View Today's Roadmap",
+          label: "Create Today's Plan",
           href: '/learning-path'
         }
       }

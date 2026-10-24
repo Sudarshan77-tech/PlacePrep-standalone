@@ -9,16 +9,27 @@ interface AIMarkdownRendererProps {
 
 /**
  * Preprocess assistant text to ensure clean Markdown interpretation:
- * 1. Convert Unicode bullets '• ' at start of lines into standard Markdown list items '- '
- * 2. Ensure lists preceded immediately by a paragraph line have a blank line so CommonMark creates a <ul> / <ol>
+ * 1. Remove unnecessary markdown markers around quotes or suggested prompts (e.g. `*"quote"*` or `*\"quote\"*`)
+ * 2. Convert Unicode bullets '• ' at start of lines into standard Markdown list items '- '
+ * 3. Ensure lists preceded immediately by a paragraph line have a blank line so CommonMark creates a <ul> / <ol>
  */
 function preprocessMarkdown(content: string): string {
   if (!content) return '';
-  // Convert Unicode bullet '• ' or '\u2022' at the start of any line into standard markdown '- '
-  let processed = content.replace(/^([ \t]*)[•\u2022][ \t]+/gm, '$1- ');
-  // Ensure that when a paragraph is directly followed by a list item without a blank line,
+  let processed = content;
+
+  // 1. Remove awkward combinations of asterisks with quotes, such as `*"text"*` or `"*text*"` or `**"text"**`
+  processed = processed.replace(/\*+["'](.*?)["']\*+/g, '"$1"');
+  processed = processed.replace(/["']\*+(.*?)\*+["']/g, '"$1"');
+  processed = processed.replace(/\*+([\"'])/g, '$1');
+  processed = processed.replace(/([\"'])\*+/g, '$1');
+
+  // 2. Convert Unicode bullet '• ' or '\u2022' at the start of any line into standard markdown '- '
+  processed = processed.replace(/^([ \t]*)[•\u2022][ \t]+/gm, '$1- ');
+
+  // 3. Ensure that when a paragraph is directly followed by a list item without a blank line,
   // we insert a newline so the parser creates a <ul>/<ol> instead of combining into <p>
   processed = processed.replace(/^([^\n\-*#\d\s].*)\n([ \t]*[-*]|\d+\.)/gm, '$1\n\n$2');
+
   return processed;
 }
 

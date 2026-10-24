@@ -1154,7 +1154,7 @@ export function generatePlacePrepAIResponse(
   ) {
     const monthlyPlan = buildMonthlyPlan(ctx, company, activePlans?.monthly);
     return {
-      text: `Here is your structured **30-Day Placement Preparation Roadmap**${company ? ` tailored for **${company}**` : ''}!\n\nThis roadmap is organized into 4 progressive weekly milestones:\n• **Week 1:** Foundational Problem Solving & Quantitative Mastery\n• **Week 2:** Advanced Data Structures & Relational Databases (${ctx.weakTopics[1] || 'DBMS'})\n• **Week 3:** Core Systems (OS, Networks, OOP) & Mid-Term Sprints\n• **Week 4:** Company Drive Simulations & Mock Interviews\n\n*Note: Placement outcomes depend on dedication, consistent practice, and interview dynamics. No specific placement offer or test score is guaranteed.*`,
+      text: `Here is your structured **30-Day Placement Preparation Roadmap**${company ? ` tailored for **${company}**` : ''}!\n\nThis roadmap is organized into 4 progressive weekly milestones:\n• **Week 1:** Foundational Problem Solving & Quantitative Mastery\n• **Week 2:** Advanced Data Structures & Relational Databases (${ctx.weakTopics[1] || 'DBMS'})\n• **Week 3:** Core Systems (OS, Networks, OOP) & Mid-Term Sprints\n• **Week 4:** Company Drive Simulations & Mock Interviews\n\nNote: Placement outcomes depend on dedication, consistent practice, and interview dynamics. No specific placement offer or test score is guaranteed.`,
       isRuleBased: true,
       plan: monthlyPlan,
       contextHighlights: [
@@ -1215,7 +1215,7 @@ export function generatePlacePrepAIResponse(
       text: `Here is your actionable **Today's Study Plan** for **${duration} minutes**${company ? ` targeted for **${company}**` : ''}:\n\n${
         isExplicit
           ? `Allocated based on your requested ${duration} minutes.`
-          : `*Assuming your default study allocation of ${duration} minutes today. You can adjust this anytime (e.g., "Give me a 2-hour plan").*`
+          : `Assuming your default study allocation of ${duration} minutes today. You can adjust this anytime (for example: "Give me a 2-hour plan").`
       }\n\nCheck off each task as you complete it:`,
       isRuleBased: true,
       plan: todayPlan,
@@ -1245,7 +1245,7 @@ export function generatePlacePrepAIResponse(
     query.includes('who are you')
   ) {
     return {
-      text: `Hello **${ctx.studentName}**! 👋\n\nI am your **PlacePrep AI Assistant**, personalized for **${ctx.collegeName}** placements.\n\nHere is how I can help you right now:\n• **Generate Study Plans:** *"Create today's plan for 2 hours"*, *"Make my weekly plan"*, or *"Create a 30-day DSA roadmap"*\n• **Explain Technical Concepts:** *"What is DSA?"*, *"Explain DBMS normalization"*, or *"What are ACID properties?"*\n• **Company Prep:** *"How should I prepare for TCS?"* or *"What does Amazon ask?"*\n• **Interview Drills:** *"Teach me the STAR method"* or *"Simulate a mock interview"*\n\nWhat would you like to work on today?`,
+      text: `Hello ${ctx.studentName}! I am your PlacePrep AI Assistant.\n\nI can analyze your preparation for ${ctx.collegeName} placements.\n\nHere are some things you can ask me:\n• Create my study plan for today\n• Which skills should I improve first?\n• How ready am I for my target company?\n• Help me prepare for technical interviews\n• Tell me about companies that recruit from my college`,
       isRuleBased: true,
       contextHighlights: [
         `Student: ${ctx.studentName}`,
@@ -1262,7 +1262,7 @@ export function generatePlacePrepAIResponse(
   // 5. Definitions & Explanations: "What is DSA?"
   if (query.includes('what is dsa') || query.includes('explain dsa') || query.includes('dsa meaning')) {
     return {
-      text: `### What is DSA (Data Structures & Algorithms)?\n\n**DSA** is the foundation of computer science and the primary filter used by top tech companies (Amazon, Microsoft, Google, TCS Digital) to evaluate candidate problem-solving abilities.\n\n1. **Data Structures:** Ways of organizing, storing, and accessing data efficiently in memory.\n   • *Linear:* Arrays, Linked Lists, Stacks, Queues.\n   • *Non-Linear:* Trees, Binary Search Trees, Heaps, Graphs, Hash Tables.\n\n2. **Algorithms:** Step-by-step mathematical procedures for processing data and solving specific problems.\n   • *Core Patterns:* Two Pointers, Sliding Window, Binary Search, DFS/BFS, Recursion & Backtracking, Dynamic Programming, Greedy.\n\n3. **Why Campus Recruiters Care:**\n   • **Time Complexity (Big-O):** Does your solution scale gracefully when handling 10 million inputs?\n   • **Space Complexity:** Can you optimize RAM usage under memory-constrained servers?\n   • **Code Robustness:** Can you identify edge cases (null inputs, duplicate elements, overflow)?\n\nWould you like me to build a daily or weekly study schedule focusing on DSA?`,
+      text: `### What is DSA (Data Structures & Algorithms)?\n\n**DSA** is the foundation of computer science and the primary filter used by top tech companies (Amazon, Microsoft, Google, TCS Digital) to evaluate candidate problem-solving abilities.\n\n1. **Data Structures:** Ways of organizing, storing, and accessing data efficiently in memory.\n   • Linear: Arrays, Linked Lists, Stacks, Queues.\n   • Non-Linear: Trees, Binary Search Trees, Heaps, Graphs, Hash Tables.\n\n2. **Algorithms:** Step-by-step mathematical procedures for processing data and solving specific problems.\n   • Core Patterns: Two Pointers, Sliding Window, Binary Search, DFS/BFS, Recursion & Backtracking, Dynamic Programming, Greedy.\n\n3. **Why Campus Recruiters Care:**\n   • **Time Complexity (Big-O):** Does your solution scale gracefully when handling large inputs?\n   • **Space Complexity:** Can you optimize RAM usage under memory-constrained servers?\n   • **Code Robustness:** Can you identify edge cases (null inputs, duplicate elements, overflow)?\n\nWould you like me to build a daily or weekly study schedule focusing on DSA?`,
       isRuleBased: true,
       suggestedAction: {
         label: 'Open Coding Arena',
@@ -1279,7 +1279,7 @@ export function generatePlacePrepAIResponse(
   // 6. Definitions & Explanations: Core CS (DBMS, Normalization, ACID)
   if (query.includes('dbms') || query.includes('normalization') || query.includes('acid') || query.includes('database')) {
     return {
-      text: `### Database Management Systems (DBMS) Essentials\n\n**1. Database Normalization:**\nTechnique of organizing relational tables to minimize data redundancy and prevent insertion, update, and deletion anomalies:\n• **1NF:** Atomic values per cell, unique column names, primary key.\n• **2NF:** In 1NF + no partial dependency (all non-key attributes fully depend on candidate key).\n• **3NF:** In 2NF + no transitive dependency (non-prime attribute depends only on primary key).\n• **BCNF:** For every functional dependency $X \\rightarrow Y$, $X$ must be a super key.\n\n**2. ACID Properties:**\n• **A - Atomicity:** All operations in a transaction succeed, or the entire transaction rolls back.\n• **C - Consistency:** Preserves database invariants before and after commit.\n• **I - Isolation:** Concurrent transactions execute without interfering with one another.\n• **D - Durability:** Once committed, changes persist even across power or system crashes.\n\n**3. Indexing:** B+ Trees allow $O(\\log N)$ lookup by maintaining balanced multi-level node pointers on disk.`,
+      text: `### Database Management Systems (DBMS) Essentials\n\n**1. Database Normalization:**\nTechnique of organizing relational tables to minimize data redundancy and prevent insertion, update, and deletion anomalies:\n• **1NF:** Atomic values per cell, unique column names, primary key.\n• **2NF:** In 1NF + no partial dependency (all non-key attributes fully depend on candidate key).\n• **3NF:** In 2NF + no transitive dependency (non-prime attribute depends only on primary key).\n• **BCNF:** For every functional dependency X -> Y, X must be a super key.\n\n**2. ACID Properties:**\n• **A - Atomicity:** All operations in a transaction succeed, or the entire transaction rolls back.\n• **C - Consistency:** Preserves database invariants before and after commit.\n• **I - Isolation:** Concurrent transactions execute without interfering with one another.\n• **D - Durability:** Once committed, changes persist even across power or system crashes.\n\n**3. Indexing:** B+ Trees allow logarithmic lookup by maintaining balanced multi-level node pointers on disk.`,
       isRuleBased: true,
       suggestedAction: {
         label: 'Practice DBMS MCQs',
@@ -1296,7 +1296,7 @@ export function generatePlacePrepAIResponse(
   // 7. Definitions & Explanations: OOP (Object-Oriented Programming)
   if (query.includes('oop') || query.includes('object oriented') || query.includes('polymorphism') || query.includes('inheritance')) {
     return {
-      text: `### 4 Pillars of Object-Oriented Programming (OOP)\n\n1. **Encapsulation:** Bundling data (state) and methods (behavior) inside a single unit (class) while restricting direct outside access via private/protected access modifiers.\n\n2. **Abstraction:** Hiding complex internal implementation details and exposing only the essential interface (e.g., abstract classes and interfaces).\n\n3. **Inheritance:** Enabling a child class to acquire fields and methods of a parent class to promote code reusability (IS-A relationship).\n\n4. **Polymorphism:** Ability of an entity to take multiple forms:\n   • *Compile-time (Static):* Method overloading.\n   • *Runtime (Dynamic):* Method overriding via virtual functions.\n\n*Recruiter Tip: Be ready to explain the difference between Composition (HAS-A) and Inheritance (IS-A).*`,
+      text: `### 4 Pillars of Object-Oriented Programming (OOP)\n\n1. **Encapsulation:** Bundling data (state) and methods (behavior) inside a single unit (class) while restricting direct outside access via private/protected access modifiers.\n\n2. **Abstraction:** Hiding complex internal implementation details and exposing only the essential interface (such as abstract classes and interfaces).\n\n3. **Inheritance:** Enabling a child class to acquire fields and methods of a parent class to promote code reusability (IS-A relationship).\n\n4. **Polymorphism:** Ability of an entity to take multiple forms:\n   • Compile-time (Static): Method overloading.\n   • Runtime (Dynamic): Method overriding via virtual functions.\n\nRecruiter Tip: Be ready to explain the difference between Composition (HAS-A) and Inheritance (IS-A).`,
       isRuleBased: true,
       suggestedAction: {
         label: 'Review Technical Concepts',
@@ -1356,7 +1356,7 @@ export function generatePlacePrepAIResponse(
   // 10. Technical Interviews & STAR Method
   if (query.includes('interview') || query.includes('star method') || query.includes('behavioral') || query.includes('hr round')) {
     return {
-      text: `### Mastering Placement Interviews with the STAR Method\n\nTop recruiters evaluate your behavioral and technical depth using the **STAR Framework**:\n\n1. **S - Situation (15%):** Set the context. Describe the project, company, or challenge clearly and concisely.\n2. **T - Task (15%):** What was your specific responsibility? What goal or metric needed to be achieved?\n3. **A - Action (50%):** The most important section! Detail the tools, design choices, algorithms, and leadership decisions **you** personally executed.\n4. **R - Result (20%):** Quantify the outcome! Use concrete numbers (e.g., *"reduced query latency by 32%"*, *"supported 5,000 concurrent students"*).\n\nYour current mock interview score is **${ctx.interviewScore}%**. Launch an AI Mock session with instant voice/text rubric analysis to practice!`,
+      text: `### Mastering Placement Interviews with the STAR Method\n\nTop recruiters evaluate your behavioral and technical depth using the **STAR Framework**:\n\n1. **S - Situation (15%):** Set the context. Describe the project, company, or challenge clearly and concisely.\n2. **T - Task (15%):** What was your specific responsibility? What goal or metric needed to be achieved?\n3. **A - Action (50%):** The most important section! Detail the tools, design choices, algorithms, and leadership decisions you personally executed.\n4. **R - Result (20%):** Quantify the outcome! Use concrete numbers (for example: "reduced query latency by 32%", "supported 5,000 concurrent students").\n\nYour current mock interview score is **${ctx.interviewScore}%**. Launch an AI Mock session with instant voice/text rubric analysis to practice!`,
       isRuleBased: true,
       suggestedAction: {
         label: 'Launch Mock Interview Simulator',
@@ -1374,7 +1374,7 @@ export function generatePlacePrepAIResponse(
   if (query.includes('skill') || query.includes('improve') || query.includes('weak') || query.includes('bottleneck')) {
     const weakList = ctx.weakTopics.length > 0
       ? ctx.weakTopics.map(w => `• **${w}** (Requires remedial practice)`).join('\n')
-      : `• **Dynamic Programming**\n• **Database Normalization & SQL**`;
+      : `• Dynamic Programming\n• Database Normalization & SQL`;
 
     return {
       text: `Based on your recent assessment diagnostics at ${ctx.collegeName}, your primary areas requiring improvement are:\n\n${weakList}\n\n**Why this matters:** Tech recruiters commonly use these topics as screening elimination filters in Round 1 and Round 2 technical interviews. We recommend starting with focused drills in these subjects.`,
@@ -1394,7 +1394,7 @@ export function generatePlacePrepAIResponse(
   // 12. College Recruiter Intelligence
   if (query.includes('college') || query.includes('campus') || query.includes('historical') || query.includes('recruiter')) {
     return {
-      text: `At **${ctx.collegeName}** (${ctx.branch}, Class of ${ctx.gradYear}):\n\n• Historically, companies hire across **Dream (10+ LPA), Core IT (6-9 LPA), and Mass/Services (3.5-5 LPA)** tiers.\n• Confirmed / Past recruiters include **${ctx.confirmedCollegeRecruiters.join(', ') || 'TCS, Infosys, Cognizant, Wipro, Capgemini'}**.\n• Most on-campus drives test Aptitude Speed in Round 1, followed by a Technical Interview focusing on Data Structures, OOP, and DBMS.\n\nYou can review complete salary packages, selection ratios, and TPO-verified records in the College Intelligence portal.`,
+      text: `At ${ctx.collegeName} (${ctx.branch}, Class of ${ctx.gradYear}):\n\n• Historically, companies hire across **Dream (10+ LPA), Core IT (6-9 LPA), and Mass/Services (3.5-5 LPA)** tiers.\n• Confirmed / Past recruiters include **${ctx.confirmedCollegeRecruiters.join(', ') || 'TCS, Infosys, Cognizant, Wipro, Capgemini'}**.\n• Most on-campus drives test Aptitude Speed in Round 1, followed by a Technical Interview focusing on Data Structures, OOP, and DBMS.\n\nYou can review complete salary packages, selection ratios, and TPO-verified records in the College Intelligence portal.`,
       isRuleBased: true,
       suggestedAction: {
         label: 'Explore College Intelligence Records',
@@ -1411,7 +1411,7 @@ export function generatePlacePrepAIResponse(
   // 13. Honest Fallback for Unrecognized / Open-Ended Questions
   // Rather than repeating the generic welcome message, directly acknowledge the user's query and provide actionable placement guidance.
   return {
-    text: `I received your question: *"**${prompt.length > 60 ? prompt.slice(0, 60) + '...' : prompt}**"*\n\nAs your local offline **PlacePrep AI Assistant**, my core intelligence is specialized in engineering placement training, campus drives, and technical interview preparation for **${ctx.collegeName}**.\n\nWhile I cannot answer general knowledge or out-of-scope queries offline, I can immediately assist you with:\n1. **Personalized Study Plans:** Say *"Create today's plan for 2 hours"* or *"Make my weekly plan"*\n2. **DSA & Core CS Concepts:** Ask *"What is DSA?"*, *"Explain DBMS normalization"*, or *"What is OOP?"*\n3. **Company Guidance:** Ask *"How to prepare for TCS / Amazon?"*\n4. **Mock Interview Preparation:** Ask *"How do I use the STAR method?"*\n\nWhich of these would you like to prepare right now?`,
+    text: `I received your question: "${prompt.length > 60 ? prompt.slice(0, 60) + '...' : prompt}"\n\nAs your local offline PlacePrep AI Assistant, my core intelligence is specialized in engineering placement training, campus drives, and technical interview preparation for ${ctx.collegeName}.\n\nWhile I cannot answer general knowledge or out-of-scope queries offline, I can immediately assist you with:\n1. **Personalized Study Plans:** Say "Create today's plan for 2 hours" or "Make my weekly plan"\n2. **DSA & Core CS Concepts:** Ask "What is DSA?", "Explain DBMS normalization", or "What is OOP?"\n3. **Company Guidance:** Ask "How to prepare for TCS / Amazon?"\n4. **Mock Interview Preparation:** Ask "How do I use the STAR method?"\n\nWhich of these would you like to prepare right now?`,
     isRuleBased: true,
     suggestedAction: {
       label: 'Create Today\'s Plan',

@@ -101,8 +101,8 @@ It integrates a student's academic background, college recruitment history, indi
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/shivamnaval980/PlacePrep.git
-   cd PlacePrep
+   git clone https://github.com/Sudarshan77-tech/PlacePrep-standalone.git
+   cd PlacePrep-standalone
    ```
 
 2. **Install dependencies:**
